@@ -1,0 +1,29 @@
+.userdashboardcard{
+    margin: 10px;
+    width: fit-content;
+    height: max-content;
+    border-radius: 10px;
+    padding: 20px;
+}
+.userdashboardcard h2{
+    font-family: "Poppins", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.userdashboardcard p{
+    font-family: "Poppins", serif;
+  font-weight: 300;
+  font-style: normal;
+  font-size: 13px;
+}
+.userdashboardcardtop{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    
+     flex-direction: row;
+}
+.userdashboardcardtop img{
+    height: 30px;
+    width: 30px;
+}

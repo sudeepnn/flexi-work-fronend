@@ -11,10 +11,14 @@ import Deatailstatuscard from './parkingdetailstatuscard/parkingdetailcard';
 import EventDetailcard from './Eventdetailscard/Eventdetailcard';
 import workspace from '../resources/workspace.png'
 import { Link } from 'react-router-dom';
+import Userdashboardcard from '../user/userdashboardcard';
 
 type Props = {};
+type userProps = {
+    userid:string |null
+};
 
-const Dashboard = (props: Props) => {
+export const Dashboard = (props: Props) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleSidebar = () => {
@@ -53,7 +57,7 @@ const Dashboard = (props: Props) => {
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-8 col-lg-offset-2">
-                            <Usernav />
+                            <Usernav username="admin" />
                             <div className="dashboardtotalnumbers">
                                 <Countcard color={'#D8F1FF'} imgscr={empimg} totalno={2134} totalnumberof={'Total no of Employees'} />
                                 <Countcard color={'#E6CEF8'} imgscr={parking} totalno={2120} totalnumberof={'Total no of Parking slot'} />
@@ -97,4 +101,118 @@ const Dashboard = (props: Props) => {
     );
 };
 
-export default Dashboard;
+
+
+export const UserDashboard = (props: userProps) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleSidebar = () => {
+        setIsOpen(!isOpen);
+    };
+
+    return (
+        <div id="wrapper" className={isOpen ? 'toggled' : ''}>
+            <div className="overlay" style={{ display: isOpen ? 'block' : 'none' }} onClick={toggleSidebar}></div>
+
+            {/* Sidebar */}
+            <nav className="navbar navbar-inverse fixed-top" id="sidebar-wrapper" role="navigation">
+                <ul className="sidebar-nav">
+                    <div className="sidebar-header">
+                        <div className="sidebar-brand">
+                            <a href="#">Brand</a>
+                        </div>
+                    </div>
+                    <li><Link  to="/dashboard"><div >Dashboard</div></Link></li>
+                    <li><Link  to="/parking"><div >Parking</div></Link></li>
+                    <li><Link  to="/events"><div >Events</div></Link></li>
+                    <li><Link  to="/feedback"><div >Feedback</div></Link></li>
+                    
+                </ul>
+            </nav>
+
+            {/* Page Content */}
+            <div id="page-content-wrapper">
+                <button type="button" className={`hamburger ${isOpen ? 'is-open' : 'is-closed'}`} onClick={toggleSidebar}>
+                    <span className="hamb-top"></span>
+                    <span className="hamb-middle"></span>
+                    <span className="hamb-bottom"></span>
+                </button>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-8 col-lg-offset-2">
+                            <Usernav username={props.userid} />
+                            
+                               <div className="dashboardtotalnumbers">
+                                    
+                            <Userdashboardcard color='#E6CEF8' heading='Parking' imgsrc={parking}/>
+                            <Userdashboardcard color='#D5E2F1' heading='Workspace' imgsrc={workspace} />
+                            <Userdashboardcard color='#D5F7D6' heading='Event' imgsrc={event} />
+                            <Userdashboardcard color='#FBE6D2' heading='Feedback' imgsrc={feedback} />
+                               </div>
+
+                                
+                                
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+
+
+export const Useremployedashboard = (props: userProps) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleSidebar = () => {
+        setIsOpen(!isOpen);
+    };
+
+    return (
+        <div id="wrapper" className={isOpen ? 'toggled' : ''}>
+            <div className="overlay" style={{ display: isOpen ? 'block' : 'none' }} onClick={toggleSidebar}></div>
+
+            {/* Sidebar */}
+            <nav className="navbar navbar-inverse fixed-top" id="sidebar-wrapper" role="navigation">
+                <ul className="sidebar-nav">
+                    <div className="sidebar-header">
+                        <div className="sidebar-brand">
+                            <a href="#">Brand</a>
+                        </div>
+                    </div>
+                    <li><Link  to="/dashboard"><div >Dashboard</div></Link></li>
+                    <li><Link  to="/parking"><div >Parking</div></Link></li>
+                    <li><Link  to="/events"><div >Events</div></Link></li>
+                    <li><Link  to="/feedback"><div >Feedback</div></Link></li>
+                    
+                </ul>
+            </nav>
+
+            {/* Page Content */}
+            <div id="page-content-wrapper">
+                <button type="button" className={`hamburger ${isOpen ? 'is-open' : 'is-closed'}`} onClick={toggleSidebar}>
+                    <span className="hamb-top"></span>
+                    <span className="hamb-middle"></span>
+                    <span className="hamb-bottom"></span>
+                </button>
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-8 col-lg-offset-2">
+                            <Usernav username={props.userid} />
+                            
+                               
+
+                                
+                                
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+// export default {Dashboard, UserDashboard};

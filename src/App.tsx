@@ -8,8 +8,9 @@ import {
 import Home from './component/landing/Home';
 import SignUpForm from './component/landing/signup/signup';
 import LoginForm from './component/landing/login/login';
-import Dashboard from './component/admin/Dashboard';
+// import Dashboard from './component/admin/Dashboard';
 import AdminEmployee from './component/admin/employee/employee';
+import Dashboardhandling from './component/admin/dashboardhandling';
 
 
 const App: React.FC = () => {
@@ -19,7 +20,7 @@ const App: React.FC = () => {
         { <><Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUpForm />} />
         <Route path="/login" element={<LoginForm />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboardhandling />} />
         <Route path="/employees" element={<AdminEmployee />} />
         </>
        /* <Route path="*" element={<Navigate to="/not-found" />} />

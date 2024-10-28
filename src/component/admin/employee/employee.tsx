@@ -46,7 +46,7 @@ const AdminEmployee = (props: Props) => {
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-8 col-lg-offset-2">
-                            <Usernav />
+                            <Usernav username="admin" />
                             <Employeecard userimg={userimg} username='Sudeep Naik' floor='1' mail='sudeep2002naik@gmail.com'phone='7864323234' manager='Sharath' />
 
                         </div>

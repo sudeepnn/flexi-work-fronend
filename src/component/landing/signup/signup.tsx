@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import './signup.css';
 import Nav from '../navtop';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const SignUpForm: React.FC = () => {
@@ -29,6 +29,7 @@ const SignUpForm: React.FC = () => {
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showError, setShowError] = useState<boolean>(false);
+  const navigate = useNavigate(); 
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>
@@ -46,7 +47,7 @@ const SignUpForm: React.FC = () => {
     try {
       const response = await axios.post('http://localhost:3001/api/v1/users/register', formData);
       console.log('User registered successfully:', response.data);
-      <Link to="/login"></Link>
+      navigate('/login');
       // Optionally, redirect or show a success message here
     } catch (error: any) {
       setErrorMessage(error.response?.data?.message || 'There was an error registering the user.');
