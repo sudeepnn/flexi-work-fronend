@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
-import { Dashboard, UserDashboard } from './Dashboard';
+// import { Dashboard, UserDashboard } from './Dashboard';
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode'; // Ensure you import jwt_decode
+import {jwtDecode} from 'jwt-decode'; 
+import { Dashboard, UserDashboard } from '../dashboards/Dashboard';
 
 type DecodedToken = {
-    userId: string; // Adjust according to your token structure
-    role: string;   // Adjust according to your token structure
+    userId: string; 
+    role: string;   
   };
 type Props = {}
 
 const Dashboardhandling: React.FC<Props> = () => {
   const [role, setRole] = useState<string | null>(null);
   const [user, setUser] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
+  const [loading, setLoading] = useState<boolean>(true); 
 
   useEffect(() => {
     const fetchRole = async () => {
       const token = localStorage.getItem('token');
 
       if (!token) {
-        setLoading(false); // Set loading to false since we're done checking for token
+        setLoading(false);
         return; // Redirect will happen in the render
       }
 
@@ -48,7 +49,6 @@ const Dashboardhandling: React.FC<Props> = () => {
   }
 
   if (!role) {
-    // If role is not available (due to no token), redirect to login
     return <Navigate to="/login" />;
   }
 

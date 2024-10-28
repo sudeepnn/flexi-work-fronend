@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
-import Usernav from './usernav';
-import './Sidebar.css'; // Make sure to import the CSS file for styling
-import Countcard from './countcard/Countcard';
+import Usernav from '../admin/usernav';
+import '../admin/Sidebar.css'; // Make sure to import the CSS file for styling
+import Countcard from '../admin/countcard/Countcard';
 import empimg from '../resources/emp.png'
 import parking from '../resources/parking.png'
 import event from '../resources/event.png'
 import feedback from '../resources/feedback.png'
 import stall from '../resources/stall.png'
-import Deatailstatuscard from './parkingdetailstatuscard/parkingdetailcard';
-import EventDetailcard from './Eventdetailscard/Eventdetailcard';
+import Deatailstatuscard from '../admin/parkingdetailstatuscard/parkingdetailcard';
+import EventDetailcard from '../admin/Eventdetailscard/Eventdetailcard';
 import workspace from '../resources/workspace.png'
 import { Link } from 'react-router-dom';
 import Userdashboardcard from '../user/userdashboardcard';
@@ -123,6 +123,7 @@ export const UserDashboard = (props: userProps) => {
                         </div>
                     </div>
                     <li><Link  to="/dashboard"><div >Dashboard</div></Link></li>
+                    <li><Link  to="/workspace"><div >Workspace</div></Link></li>
                     <li><Link  to="/parking"><div >Parking</div></Link></li>
                     <li><Link  to="/events"><div >Events</div></Link></li>
                     <li><Link  to="/feedback"><div >Feedback</div></Link></li>
@@ -142,14 +143,17 @@ export const UserDashboard = (props: userProps) => {
                         <div className="col-lg-8 col-lg-offset-2">
                             <Usernav username={props.userid} />
                             
-                               <div className="dashboardtotalnumbers">
+                              <div className="dashboardroute">
+                              <div className="dashboardtotalnumbers">
                                     
-                            <Userdashboardcard color='#E6CEF8' heading='Parking' imgsrc={parking}/>
-                            <Userdashboardcard color='#D5E2F1' heading='Workspace' imgsrc={workspace} />
-                            <Userdashboardcard color='#D5F7D6' heading='Event' imgsrc={event} />
-                            <Userdashboardcard color='#FBE6D2' heading='Feedback' imgsrc={feedback} />
-                               </div>
+                                    <Userdashboardcard color='#E6CEF8' heading='Parking' imgsrc={parking}/>
+                                    <Userdashboardcard color='#D5E2F1' heading='Workspace' imgsrc={workspace} />
+                                    <Userdashboardcard color='#D5F7D6' heading='Event' imgsrc={event} />
+                                    <Userdashboardcard color='#FBE6D2' heading='Feedback' imgsrc={feedback} />
+                                       </div>
+                              </div>
 
+                              
                                 
                                 
                             
@@ -163,56 +167,5 @@ export const UserDashboard = (props: userProps) => {
 
 
 
-export const Useremployedashboard = (props: userProps) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    const toggleSidebar = () => {
-        setIsOpen(!isOpen);
-    };
-
-    return (
-        <div id="wrapper" className={isOpen ? 'toggled' : ''}>
-            <div className="overlay" style={{ display: isOpen ? 'block' : 'none' }} onClick={toggleSidebar}></div>
-
-            {/* Sidebar */}
-            <nav className="navbar navbar-inverse fixed-top" id="sidebar-wrapper" role="navigation">
-                <ul className="sidebar-nav">
-                    <div className="sidebar-header">
-                        <div className="sidebar-brand">
-                            <a href="#">Brand</a>
-                        </div>
-                    </div>
-                    <li><Link  to="/dashboard"><div >Dashboard</div></Link></li>
-                    <li><Link  to="/parking"><div >Parking</div></Link></li>
-                    <li><Link  to="/events"><div >Events</div></Link></li>
-                    <li><Link  to="/feedback"><div >Feedback</div></Link></li>
-                    
-                </ul>
-            </nav>
-
-            {/* Page Content */}
-            <div id="page-content-wrapper">
-                <button type="button" className={`hamburger ${isOpen ? 'is-open' : 'is-closed'}`} onClick={toggleSidebar}>
-                    <span className="hamb-top"></span>
-                    <span className="hamb-middle"></span>
-                    <span className="hamb-bottom"></span>
-                </button>
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-8 col-lg-offset-2">
-                            <Usernav username={props.userid} />
-                            
-                               
-
-                                
-                                
-                            
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
 
 // export default {Dashboard, UserDashboard};

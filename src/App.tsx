@@ -10,7 +10,13 @@ import SignUpForm from './component/landing/signup/signup';
 import LoginForm from './component/landing/login/login';
 // import Dashboard from './component/admin/Dashboard';
 import AdminEmployee from './component/admin/employee/employee';
-import Dashboardhandling from './component/admin/dashboardhandling';
+// import Dashboardhandling from './component/admin/';
+// import Parkinghandler from './component/admin/parkinghandler';
+import Workspacehandler from './component/route_handler/workspace_handler';
+import Dashboardhandling from './component/route_handler/dashboardhandling';
+import Parkinghandler from './component/route_handler/parkinghandler';
+import EventRegistrehandler from './component/route_handler/Event_registraion_handler';
+import FeedbackHandler from './component/route_handler/Feedback_handler';
 
 
 const App: React.FC = () => {
@@ -21,6 +27,11 @@ const App: React.FC = () => {
         <Route path="/signup" element={<SignUpForm />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/dashboard" element={<Dashboardhandling />} />
+        <Route path="/parking" element={<Parkinghandler />} />
+        <Route path="/workspace" element={<Workspacehandler />} />
+        <Route path="/events" element={<EventRegistrehandler />} />
+        <Route path="/feedback" element={<FeedbackHandler />} />
+        
         <Route path="/employees" element={<AdminEmployee />} />
         </>
        /* <Route path="*" element={<Navigate to="/not-found" />} />
