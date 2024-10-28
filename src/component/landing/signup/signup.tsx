@@ -8,7 +8,7 @@ import {
   
 } from '@mui/material';
 import './signup.css'
-import Nav from '../nav';
+import Nav from '../navtop';
 import { Link } from 'react-router-dom';
 const SignUpForm: React.FC = () => {
   return (

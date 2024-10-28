@@ -1,0 +1,124 @@
+/* Sidebar.css */
+*{
+    padding: 0;
+    margin: 0;
+}
+/* Wrapper for the sidebar and content */
+#wrapper {
+    position: relative;
+    display: flex;
+  }
+  
+  /* Sidebar */
+  #sidebar-wrapper {
+    position: fixed;
+    left: 0;
+    width: 250px;
+    height: 100%;
+    background: #016375;
+    color: #fff;
+    z-index: 1000;
+    transition: all 0.3s;
+    transform: translateX(-250px); /* Initially hidden */
+  }
+  
+  #wrapper.toggled #sidebar-wrapper {
+    transform: translateX(0); /* Show sidebar when toggled */
+  }
+  
+  /* Sidebar header */
+  .sidebar-header {
+    padding: 17px;
+    background: #016375;
+    border-bottom: 1px solid white;
+    text-align: center;
+  }
+  
+  /* Sidebar navigation */
+  .sidebar-nav {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar-nav li {
+    padding: 10px 20px;
+    font-family: "Inknut Antiqua", serif;
+    font-weight: 300;
+    font-style: normal;
+  }
+  
+  .sidebar-nav li a {
+    color: #ddd;
+    text-decoration: none;
+  }
+  
+  .sidebar-nav li a:hover {
+    color: #fff;
+  }
+  
+  /* Dropdown in the sidebar */
+  .sidebar-nav .dropdown-menu {
+    background: #444;
+  }
+  
+  /* Page content */
+  #page-content-wrapper {
+    flex-grow: 1;
+   
+    transition: all 0.3s;
+  }
+  
+  #wrapper.toggled #page-content-wrapper {
+    margin-left: 250px;
+  }
+  
+  /* Overlay */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+  }
+  
+  /* Hamburger menu button */
+  .hamburger {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 1100;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+  
+  .hamburger span {
+    display: block;
+    width: 30px;
+    height: 4px;
+    background: #016375;
+    transition: all 0.3s;
+    
+  }
+  
+  /* Hamburger open/close animation */
+  .is-open .hamb-top {
+    transform: rotate(45deg);
+    position: absolute;
+  }
+  
+  .is-open .hamb-middle {
+    opacity: 0;
+  }
+  
+  .is-open .hamb-bottom {
+    transform: rotate(-45deg);
+    position: absolute;
+  }
+  
