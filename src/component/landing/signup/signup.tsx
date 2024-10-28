@@ -1,121 +1,183 @@
 // SignUpForm.tsx
-import React from 'react';
+import React, { useState } from 'react';
 import {
   TextField,
   Button,
   Select,
-  MenuItem, FormControl, InputLabel,
-  
+  MenuItem,
+  FormControl,
+  InputLabel,
+  SelectChangeEvent,
+  Alert,
+  Snackbar,
 } from '@mui/material';
-import './signup.css'
+import './signup.css';
 import Nav from '../navtop';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+
 const SignUpForm: React.FC = () => {
+  const [formData, setFormData] = useState({
+    user_id: '',
+    password: '',
+    email: '',
+    name: '',
+    phone: '',
+    address: '',
+    role: '',
+  });
+
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showError, setShowError] = useState<boolean>(false);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>
+  ) => {
+    const { name, value } = e.target as HTMLInputElement | HTMLTextAreaElement | { name: string; value: string };
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setShowError(false); // Hide previous error message before submitting
+    try {
+      const response = await axios.post('http://localhost:3001/api/v1/users/register', formData);
+      console.log('User registered successfully:', response.data);
+      <Link to="/login"></Link>
+      // Optionally, redirect or show a success message here
+    } catch (error: any) {
+      setErrorMessage(error.response?.data?.message || 'There was an error registering the user.');
+      setShowError(true);
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setShowError(false);
+  };
+
   return (
-   
-
-    <div className='signup'>
-      <Nav option1='Home' link1='/' option2='Login' link2='/login' ></Nav>
-
+    <div className="signup">
+      <Nav option1="Home" link1="/" option2="Login" link2="/login" />
       <div className="parent">
         <div className="left">
-
           <div className="welcomgrp">
             <h3>Welcome to Sign up</h3>
-            <h4>already have an account ?</h4>
+            <h4>Already have an account?</h4>
           </div>
           <Link to="/login" className="linktologin">
-          <button >Login</button> </Link>
-
+            <button>Login</button>
+          </Link>
         </div>
         <div className="right">
-          <h3>
-            Sign up
-          </h3>
-          <div className="inputs">
-            <TextField className='signupinput'
+          <h3>Sign up</h3>
+          {/* Display custom Snackbar alert for errors */}
+          <Snackbar
+            open={showError}
+            autoHideDuration={6000}
+            onClose={handleCloseSnackbar}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          >
+            <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+              {errorMessage}
+            </Alert>
+          </Snackbar>
+          <form className="inputs" onSubmit={handleSubmit}>
+            <TextField
+              className="signupinput"
               margin="normal"
               fullWidth
-              name="UserID"
-              label="UserID"
+              name="user_id"
+              label="User ID"
               type="text"
-              id="userid"
+              value={formData.user_id}
+              onChange={handleChange}
+              required
             />
-
-            <TextField className='signupinput'
+            <TextField
+              className="signupinput"
               margin="normal"
               fullWidth
-              name="Name"
+              name="name"
               label="Name"
               type="text"
-              id="name"
+              value={formData.name}
+              onChange={handleChange}
+              required
             />
-            <TextField className='signupinput'
+            <TextField
+              className="signupinput"
               margin="normal"
               fullWidth
-              name="Password"
+              name="password"
               label="Password"
               type="password"
-              id="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
             />
-            <TextField className='signupinput'
+            <TextField
+              className="signupinput"
               margin="normal"
               fullWidth
-              name="Email"
+              name="email"
               label="Email"
               type="email"
-              id="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
             />
-            <TextField className='signupinput'
+            <TextField
+              className="signupinput"
               margin="normal"
               fullWidth
-              name="Phone"
+              name="phone"
               label="Phone"
               type="tel"
-              id="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              required
             />
-            <TextField className='signupinput'
+            <TextField
+              className="signupinput"
               margin="normal"
               fullWidth
-              name="Address"
+              name="address"
               label="Address"
               type="text"
-              id="address"
-              
+              value={formData.address}
+              onChange={handleChange}
+              required
             />
-             <FormControl fullWidth margin="normal">
-        <InputLabel id="role-select-label">Role</InputLabel>
-        <Select
-          labelId="role-select-label"
-          // value={role}
-          // onChange={handleChange}s
-          label="Role"
-        >
-          <MenuItem value="employee">Employee</MenuItem>
-          <MenuItem value="vendor">Vendor</MenuItem>
-          <MenuItem value="Manager">Manager</MenuItem>
-          <MenuItem value="Security">Security</MenuItem>
-          
-        </Select>
-      </FormControl>
-
-<Button 
+            <FormControl fullWidth margin="normal">
+              <InputLabel id="role-select-label">Role</InputLabel>
+              <Select
+                labelId="role-select-label"
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                label="Role"
+                required
+              >
+                <MenuItem value="employee">Employee</MenuItem>
+                <MenuItem value="vendor">Vendor</MenuItem>
+                <MenuItem value="manager">Manager</MenuItem>
+                <MenuItem value="security">Security</MenuItem>
+              </Select>
+            </FormControl>
+            <Button
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2,
-                backgroundColor:'#016375',
-                borderRadius:'15px'
-               }}
+              sx={{ mt: 3, mb: 2, backgroundColor: '#016375', borderRadius: '15px' }}
             >
               Sign Up
             </Button>
-
-          </div>
+          </form>
         </div>
       </div>
-
-
     </div>
   );
 };
