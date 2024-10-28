@@ -10,6 +10,7 @@ import stall from '../resources/stall.png'
 import Deatailstatuscard from './parkingdetailstatuscard/parkingdetailcard';
 import EventDetailcard from './Eventdetailscard/Eventdetailcard';
 import workspace from '../resources/workspace.png'
+import { Link } from 'react-router-dom';
 
 type Props = {};
 
@@ -32,12 +33,13 @@ const Dashboard = (props: Props) => {
                             <a href="#">Brand</a>
                         </div>
                     </div>
-                    <li><a href="#home">Dashboard</a></li>
-                    <li><a href="#about">Employees</a></li>
-                    <li><a href="#events">Parking</a></li>
-                    <li><a href="#services">Events</a></li>
-                    <li><a href="#contact">Vendorstall</a></li>
-                    <li><a href="#followme">Feedback</a></li>
+                    <li><Link  to="/dashboard"><div >Dashboard</div></Link></li>
+                    <li><Link  to="/employees"><div >Employees</div></Link></li>
+                    <li><Link  to="/parking"><div >Parking</div></Link></li>
+                    <li><Link  to="/events"><div >Events</div></Link></li>
+                    <li><Link  to="/vendor"><div >Vendorstall</div></Link></li>
+                    <li><Link  to="/feedback"><div >Feedback</div></Link></li>
+                    
                 </ul>
             </nav>
 
