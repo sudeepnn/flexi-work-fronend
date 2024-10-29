@@ -5,7 +5,7 @@ import { Navigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import { Dashboard } from '../dashboards/Dashboard';
-import { UserParkingDash } from '../dashboards/parkingdashboard';
+import { AdminParkingDash, UserParkingDash } from '../dashboards/parkingdashboard';
 
 type DecodedToken = {
     userId: string; 
@@ -55,7 +55,7 @@ const Parkinghandler = (props: Props) => {
     }
   
     // Render different dashboards based on the role
-    return role === 'admin' ? <Dashboard /> : <UserParkingDash userid={user}   />;
+    return role === 'admin' ? <AdminParkingDash  userid={user}/> : <UserParkingDash userid={user}   />;
   };
 
 

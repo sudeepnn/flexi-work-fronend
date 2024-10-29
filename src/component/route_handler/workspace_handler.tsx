@@ -4,7 +4,7 @@ import { UserParkingDash } from '../dashboards/parkingdashboard';
 import { Dashboard } from '../dashboards/Dashboard';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
-import { UserWorkspace } from '../dashboards/workspace_dash';
+import { AdminWorkspacedash, UserWorkspace } from '../dashboards/workspace_dash';
 
 type DecodedToken = {
     userId: string; 
@@ -54,7 +54,7 @@ const Workspacehandler = (props: Props) => {
     }
   
     // Render different dashboards based on the role
-    return role === 'admin' ? <Dashboard /> : <UserWorkspace userid={user}   />;
+    return role === 'admin' ? <AdminWorkspacedash userid='Admin' /> : <UserWorkspace userid={user}   />;
   };
 
 
