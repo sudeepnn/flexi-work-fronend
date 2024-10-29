@@ -32,6 +32,15 @@
     justify-content: space-around;
     align-items: center;
     flex-direction: column;
-    
-    height: 90vh;
+    width: 100%;
+    height: 60vh;
+}
+.parkingbook form{
+    width: 50%;
+}
+.parkingbook h3{
+    font-family: "Inknut Antiqua", serif;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 25px;
 }

@@ -17,6 +17,10 @@ import Dashboardhandling from './component/route_handler/dashboardhandling';
 import Parkinghandler from './component/route_handler/parkinghandler';
 import EventRegistrehandler from './component/route_handler/Event_registraion_handler';
 import FeedbackHandler from './component/route_handler/Feedback_handler';
+import { UserParkingDash } from './component/dashboards/parkingdashboard';
+import { UserWorkspace } from './component/dashboards/workspace_dash';
+import { UserEventDash } from './component/dashboards/event_dash';
+import { FeedbackDash } from './component/dashboards/Feedback_dash';
 
 
 const App: React.FC = () => {
@@ -33,6 +37,10 @@ const App: React.FC = () => {
         <Route path="/feedback" element={<FeedbackHandler />} />
         
         <Route path="/employees" element={<AdminEmployee />} />
+        <Route path="/dev/parking" element={<UserParkingDash userid="1234"   />} />
+        <Route path="/dev/workspace" element={<UserWorkspace userid="1234"   />} />
+        <Route path="/dev/event" element={<UserEventDash userid="1234"   />} />
+        <Route path="/dev/feedback" element={<FeedbackDash userid="1234"   />} />
         </>
        /* <Route path="*" element={<Navigate to="/not-found" />} />
         <Route path="/not-found" element={<NotFound />} /> */}
