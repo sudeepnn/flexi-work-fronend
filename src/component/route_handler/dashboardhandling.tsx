@@ -27,7 +27,7 @@ const Dashboardhandling: React.FC<Props> = () => {
 
       try {
         const decoded: DecodedToken = jwtDecode(token); // Decode the token
-       console.log(decoded)
+      //  console.log(decoded)
         const userId = decoded.userId;
 
         // Fetch the user role from your user data

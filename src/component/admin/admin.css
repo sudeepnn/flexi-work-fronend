@@ -76,3 +76,9 @@ body{
   font-style: normal;
   font-size: 13px;
 }
+.circular-image {
+  width: 100px; /* Set width */
+  height: 100px; /* Set height */
+  border-radius: 50%; /* Makes the image circular */
+  object-fit: cover; /* Ensures the image covers the circle */
+}

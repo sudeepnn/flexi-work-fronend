@@ -26,6 +26,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 interface Booking {
   userId?: string;
+  name:string
   vehicalnumber: string;
   contact: number;
   startTime: Date;
@@ -269,6 +270,7 @@ const AdminParking: React.FC = () => {
               {selectedBooking.booking && (
                 <>
                   <Typography variant="body1"><strong>User ID:</strong> {selectedBooking.booking.userId}</Typography>
+                  <Typography variant="body1"><strong>User Name:</strong> {selectedBooking.booking.name}</Typography>
                   <Typography variant="body1"><strong>Vehicle Number:</strong> {selectedBooking.booking.vehicalnumber}</Typography>
                   <Typography variant="body1"><strong>Contact:</strong> {selectedBooking.booking.contact}</Typography>
                   <Typography variant="body1"><strong>Start Time:</strong> {new Date(selectedBooking.booking.startTime).toLocaleString()}</Typography>

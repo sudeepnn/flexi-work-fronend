@@ -1,60 +1,58 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    IconButton,
-    InputAdornment,
-    Paper,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TextField,
-    Typography,
-    MenuItem,
-  } from '@mui/material';
-  import SearchIcon from '@mui/icons-material/Search';
-  import AddIcon from '@mui/icons-material/Add';
-  interface Booking {
-    id: number;
-    uid: string;
-    name: string;
-    parkingSlot: string;
-    bookedTime: string;
-    phone:number,
-    bookingstatus: string;
-  }
-  
-  // Sample booking data
-  const bookingData: Booking[] = [
-    { id: 1, uid: '123234', name: 'Sudeep Naik', parkingSlot: 'P-001', bookedTime: '24-01-2024 9:00 AM',phone:1234567890, bookingstatus: 'Success' },
-    { id: 2, uid: '123234', name: 'Sudeep Naik', parkingSlot: 'P-001', bookedTime: '24-01-2024 9:00 AM',phone:1234567890, bookingstatus: 'Success' },
-    { id: 3, uid: '123234', name: 'Sudeep Naik', parkingSlot: 'P-001', bookedTime: '24-01-2024 9:00 AM',phone:1234567890, bookingstatus: 'Success' },
-    { id: 4, uid: '123234', name: 'Sudeep Naik', parkingSlot: 'P-001', bookedTime: '24-01-2024 9:00 AM',phone:1234567890, bookingstatus: 'Success' },
-    { id: 5, uid: '123234', name: 'Sudeep Naik', parkingSlot: 'P-001', bookedTime: '24-01-2024 9:00 AM',phone:1234567890, bookingstatus: 'Success' },
-    { id: 6, uid: '123234', name: 'Sudeep Naik', parkingSlot: 'P-001', bookedTime: '24-01-2024 9:00 AM',phone:1234567890, bookingstatus: 'Success' },
-    { id: 7, uid: '123234', name: 'Sudeep Naik', parkingSlot: 'P-001', bookedTime: '24-01-2024 9:00 AM',phone:1234567890, bookingstatus: 'Success' },
-    { id: 8, uid: '123234', name: 'Sudeep Naik', parkingSlot: 'P-001', bookedTime: '24-01-2024 9:00 AM',phone:1234567890, bookingstatus: 'Success' },
-    { id: 9, uid: '123234', name: 'Sudeep Naik', parkingSlot: 'P-001', bookedTime: '24-01-2024 9:00 AM',phone:1234567890, bookingstatus: 'Success' },
-    { id: 10, uid: '123234', name: 'Sudeep Naik', parkingSlot: 'P-001', bookedTime: '24-01-2024 9:00 AM',phone:1234567890, bookingstatus: 'Success' },
-    { id: 11, uid: '123234', name: 'Sudeep Naik', parkingSlot: 'P-001', bookedTime: '24-01-2024 9:00 AM',phone:1234567890, bookingstatus: 'Success' },
-  ];
-type Props = {}
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  InputAdornment,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
+import axios from 'axios';
 
-const AdminWorkspace = (props: Props) => {
-    const [isFocused, setIsFocused] = useState(false);
-    const [open, setOpen] = useState(false);
+interface Workspace {
+  workspace_id: number;
+  project: string;
+  floor: number;
+  availability: boolean;
+}
+
+const AdminWorkspace = () => {
+  const [isFocused, setIsFocused] = useState(false);
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
+    workspace_id: '',
+    project: '',
     floor: '',
-    parkingSlot: '',
-    parkingType: '',
   });
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+
+  // Fetch workspaces when the component mounts
+  useEffect(() => {
+   
+
+    fetchWorkspaces();
+  }, []);
+
+  const fetchWorkspaces = async () => {
+    try {
+      const response = await axios.get('http://localhost:3005/api/v1/workspace');
+      setWorkspaces(response.data); // Set the fetched workspaces
+    } catch (error) {
+      console.error('Error fetching workspaces:', error);
+    }
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -68,11 +66,24 @@ const AdminWorkspace = (props: Props) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = () => {
-    // Handle form submission logic here (e.g., send data to API)
-    console.log('Parking details submitted:', formData);
-    handleClose(); // Close the dialog after submission
+  const handleSubmit = async () => {
+    // Handle form submission logic here (send data to API)
+    try {
+      await axios.post('http://localhost:3005/api/v1/workspace', {
+        workspace_id: formData.workspace_id,
+        project: formData.project,
+        floor: parseInt(formData.floor), // Ensure floor is an integer
+      });
+      console.log('Workspace details submitted:', formData);
+      handleClose(); // Close the dialog after submission
+      setFormData({ workspace_id: '', project: '', floor: '' }); // Reset form
+      fetchWorkspaces();
+      
+    } catch (error) {
+      console.error('Error submitting workspace:', error);
+    }
   };
+
   return (
     <Box p={3}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
@@ -103,98 +114,77 @@ const AdminWorkspace = (props: Props) => {
             },
           }}
         />
-        <Button variant="contained" color="primary" startIcon={<AddIcon />}
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
           onClick={handleClickOpen}
-         sx={{ mt: 3, mb: 2, backgroundColor: '#016375', borderRadius: '15px' }}>
+          sx={{ mt: 3, mb: 2, backgroundColor: '#016375', borderRadius: '15px' }}
+        >
           Add Workspace
         </Button>
       </Box>
 
       <TableContainer component={Paper}>
-        <Box sx={{
-            maxHeight: 400,
-            overflowY: 'auto',
-            '&::-webkit-scrollbar': {
-              width: '8px',
-            },
-            '&::-webkit-scrollbar-track': {
-              backgroundColor: '#f1f1f1',
-              borderRadius: '4px',
-            },
-            '&::-webkit-scrollbar-thumb': {
-              backgroundColor: '#888',
-              borderRadius: '4px',
-            },
-            '&::-webkit-scrollbar-thumb:hover': {
-              backgroundColor: '#555',
-            },
-          }}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>No</TableCell>
-                <TableCell>UID</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Workspace Slot</TableCell>
-                <TableCell>Booked Time</TableCell>
-                <TableCell>Phone</TableCell>
-                <TableCell>Booking Status</TableCell>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
+              <TableCell>No</TableCell>
+              <TableCell>Workspace ID</TableCell>
+              <TableCell>Project</TableCell>
+              <TableCell>Floor</TableCell>
+              <TableCell>Availability</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {workspaces.map((workspace, index) => (
+              <TableRow key={workspace.workspace_id}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{workspace.workspace_id}</TableCell>
+                <TableCell>{workspace.project}</TableCell>
+                <TableCell>{workspace.floor}</TableCell>
+                <TableCell>{workspace.availability ? 'Available' : 'Unavailable'}</TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {bookingData.map((booking) => (
-                <TableRow key={booking.id}>
-                  <TableCell>{booking.id}</TableCell>
-                  <TableCell>{booking.uid}</TableCell>
-                  <TableCell>{booking.name}</TableCell>
-                  <TableCell>{booking.parkingSlot}</TableCell>
-                  <TableCell>{booking.bookedTime}</TableCell>
-                  <TableCell>{booking.phone}</TableCell>
-                  <TableCell>{booking.bookingstatus}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
+            ))}
+          </TableBody>
+        </Table>
       </TableContainer>
 
-      {/* Dialog for Adding Parking Details */}
+      {/* Dialog for Adding Workspace Details */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add Workspace Slot Details</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
-            name="Workspaceslot"
-            label="Workspace Slot No"
+            name="workspace_id"
+            label="Workspace ID"
             type="text"
             fullWidth
             variant="outlined"
-            value={formData.floor}
-            onChange={handleChange}
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            name="floor"
-            label="Floor"
-            type="text"
-            fullWidth
-            variant="outlined"
-            value={formData.floor}
+            value={formData.workspace_id}
             onChange={handleChange}
           />
           <TextField
             margin="dense"
-            name="Project"
+            name="project"
             label="Project"
             type="text"
             fullWidth
             variant="outlined"
-            value={formData.parkingSlot}
+            value={formData.project}
             onChange={handleChange}
           />
-          
+          <TextField
+            margin="dense"
+            name="floor"
+            label="Floor"
+            type="number" // Ensure the input is numeric
+            fullWidth
+            variant="outlined"
+            value={formData.floor}
+            onChange={handleChange}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
@@ -207,6 +197,6 @@ const AdminWorkspace = (props: Props) => {
       </Dialog>
     </Box>
   );
-}
+};
 
-export default AdminWorkspace
+export default AdminWorkspace;
