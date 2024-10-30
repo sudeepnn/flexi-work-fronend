@@ -44,6 +44,7 @@ const UserNav = (props: Props) => {
         // Fetch the user role from your user data
         const userResponse = await axios.get(`http://localhost:3001/api/v1/users/${userId}`);
         setUserid(userResponse.data.user_id);
+        setProfilePic(userResponse.data.profileImage)
        
       } catch (error) {
         console.error('Error fetching user role:', error);
@@ -55,7 +56,7 @@ const UserNav = (props: Props) => {
   const handleClickOpen = async () => {
     // Fetch user details from the API
     try {
-      const response = await axios.get('http://localhost:3001/api/v1/users/287654');
+      const response = await axios.get(`http://localhost:3001/api/v1/users/${user}`);
       const userData = response.data;
       // Update state with user data
       setEmail(userData.email);
@@ -92,17 +93,17 @@ const UserNav = (props: Props) => {
 
       if (fileInput) {
         const formData = new FormData();
-        formData.append('file', fileInput);
+        formData.append('profileImage', fileInput);
         formData.append('user_id', user || '');
 
-        const uploadResponse = await axios.post('localhost:3001/api/v1/update-profile-image', formData);
+        const uploadResponse = await axios.post('http://localhost:3001/api/v1/update-profile-image', formData);
         profileImageUrl = uploadResponse.data.profileImageUrl;
       }
 
       const userData = {
         user_id: user || '',
-        // email,
-        // name,
+        //email,
+        //name,
         phone,
         address,
         // role: 'user', // Set according to your app logic
@@ -113,9 +114,11 @@ const UserNav = (props: Props) => {
       };
 
       await axios.put(`http://localhost:3001/api/v1/user/update-user`, userData);
+      console.log(userData)
       handleClose();
     } catch (error) {
       console.error('Error updating user data:', error);
+      console.log(error)
     }
   };
 

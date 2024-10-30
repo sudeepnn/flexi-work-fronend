@@ -19,6 +19,8 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 
 interface Workspace {
@@ -31,35 +33,56 @@ interface Workspace {
 const AdminWorkspace = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [open, setOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false); // State for details dialog
+  const [detailsData, setDetailsData] = useState<any>(null); // Data for details dialog
   const [formData, setFormData] = useState({
     workspace_id: '',
     project: '',
     floor: '',
   });
   const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  const [editMode, setEditMode] = useState(false);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  // Fetch workspaces when the component mounts
   useEffect(() => {
-   
-
     fetchWorkspaces();
   }, []);
 
   const fetchWorkspaces = async () => {
     try {
       const response = await axios.get('http://localhost:3005/api/v1/workspace');
-      setWorkspaces(response.data); // Set the fetched workspaces
+      setWorkspaces(response.data);
     } catch (error) {
       console.error('Error fetching workspaces:', error);
     }
   };
 
+  const fetchWorkspaceDetails = async (id: number) => {
+    try {
+      const response = await axios.get(`http://localhost:3005/api/v1/workspaceBooking/${id}`);
+      setDetailsData(response.data); // Set details data
+      setDetailsOpen(true); // Open details dialog
+    } catch (error) {
+      console.error('Error fetching workspace details:', error);
+    }
+  };
+
   const handleClickOpen = () => {
+    
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
+    setEditMode(false);
+    setSelectedId(null);
+    setFormData({ workspace_id: '', project: '', floor: '' });
+  };
+
+  const handleDetailsClose = () => {
+    setDetailsOpen(false); // Close details dialog
+    console.log(detailsData)
+    setDetailsData(null);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -67,20 +90,44 @@ const AdminWorkspace = () => {
   };
 
   const handleSubmit = async () => {
-    // Handle form submission logic here (send data to API)
     try {
-      await axios.post('http://localhost:3005/api/v1/workspace', {
-        workspace_id: formData.workspace_id,
-        project: formData.project,
-        floor: parseInt(formData.floor), // Ensure floor is an integer
-      });
-      console.log('Workspace details submitted:', formData);
-      handleClose(); // Close the dialog after submission
-      setFormData({ workspace_id: '', project: '', floor: '' }); // Reset form
+      if (editMode && selectedId !== null) {
+        await axios.put(`http://localhost:3005/api/v1/workspace/${selectedId}`, {
+          workspace_id: formData.workspace_id,
+          project: formData.project,
+          floor: parseInt(formData.floor),
+        });
+      } else {
+        await axios.post('http://localhost:3005/api/v1/workspace', {
+          workspace_id: formData.workspace_id,
+          project: formData.project,
+          floor: parseInt(formData.floor),
+        });
+      }
+      handleClose();
       fetchWorkspaces();
-      
     } catch (error) {
       console.error('Error submitting workspace:', error);
+    }
+  };
+
+  const handleEdit = (workspace: Workspace) => {
+    setEditMode(true);
+    setSelectedId(workspace.workspace_id);
+    setFormData({
+      workspace_id: workspace.workspace_id.toString(),
+      project: workspace.project,
+      floor: workspace.floor.toString(),
+    });
+    setOpen(true);
+  };
+
+  const handleDelete = async (id: number) => {
+    try {
+      await axios.delete(`http://localhost:3005/api/v1/workspace/${id}`);
+      fetchWorkspaces();
+    } catch (error) {
+      console.error('Error deleting workspace:', error);
     }
   };
 
@@ -134,6 +181,7 @@ const AdminWorkspace = () => {
               <TableCell>Project</TableCell>
               <TableCell>Floor</TableCell>
               <TableCell>Availability</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -144,15 +192,27 @@ const AdminWorkspace = () => {
                 <TableCell>{workspace.project}</TableCell>
                 <TableCell>{workspace.floor}</TableCell>
                 <TableCell>{workspace.availability ? 'Available' : 'Unavailable'}</TableCell>
+                <TableCell>
+                  <Button onClick={() => handleEdit(workspace)} color="primary" startIcon={<EditIcon />}>
+                    Edit
+                  </Button>
+                  <Button onClick={() => handleDelete(workspace.workspace_id)} color="secondary" startIcon={<DeleteIcon />}>
+                    Delete
+                  </Button>
+                  {!workspace.availability && (
+                    <Button onClick={() => fetchWorkspaceDetails(workspace.workspace_id)} color="info">
+                      Details
+                    </Button>
+                  )}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      {/* Dialog for Adding Workspace Details */}
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add Workspace Slot Details</DialogTitle>
+        <DialogTitle>{editMode ? 'Edit Workspace Slot Details' : 'Add Workspace Slot Details'}</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -179,7 +239,7 @@ const AdminWorkspace = () => {
             margin="dense"
             name="floor"
             label="Floor"
-            type="number" // Ensure the input is numeric
+            type="number"
             fullWidth
             variant="outlined"
             value={formData.floor}
@@ -191,7 +251,36 @@ const AdminWorkspace = () => {
             Cancel
           </Button>
           <Button onClick={handleSubmit} color="primary">
-            Submit
+            {editMode ? 'Update' : 'Submit'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Details Dialog */}
+      <Dialog open={detailsOpen} onClose={handleDetailsClose}>
+        <DialogTitle>Workspace Details</DialogTitle>
+        <DialogContent>
+          {detailsData ? (
+            
+            <div>
+              <Typography>Workspace_id: {detailsData.workspace_id}</Typography>
+              <Typography>Name: {detailsData.name}</Typography>
+              <Typography>Employee Id: {detailsData.user_id}</Typography>
+              <Typography>Project: {detailsData.project}</Typography>
+              <Typography>Floor: {detailsData.floor}</Typography>
+              <Typography>Booking Date: {detailsData.Booking_start_time}</Typography>
+              
+              
+              
+              {/* Add any other fields here */}
+            </div>
+          ) : (
+            <Typography>Loading details...</Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDetailsClose} color="primary">
+            Close
           </Button>
         </DialogActions>
       </Dialog>
