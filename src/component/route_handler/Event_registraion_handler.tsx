@@ -4,7 +4,7 @@ import { Dashboard } from '../dashboards/Dashboard';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
-import { UserEventDash } from '../dashboards/event_dash';
+import { AdminEventDash, UserEventDash } from '../dashboards/event_dash';
 
 type DecodedToken = {
     userId: string; 
@@ -54,7 +54,7 @@ const EventRegistrehandler = (props: Props) => {
     }
   
     // Render different dashboards based on the role
-    return role === 'admin' ? <Dashboard /> : <UserEventDash userid={user}   />;
+    return role === 'admin' ? <AdminEventDash userid={"admin"} /> : <UserEventDash userid={user}   />;
   };
 
 

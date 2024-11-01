@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
 import { UserEventDash } from '../dashboards/event_dash';
-import { FeedbackDash } from '../dashboards/Feedback_dash';
+import { AdminFeedbackDash, FeedbackDash } from '../dashboards/Feedback_dash';
 
 type DecodedToken = {
     userId: string; 
@@ -55,7 +55,7 @@ const FeedbackHandler = (props: Props) => {
     }
   
     // Render different dashboards based on the role
-    return role === 'admin' ? <Dashboard /> : <FeedbackDash userid={user}   />;
+    return role === 'admin' ? <AdminFeedbackDash userid={"admin"} /> : <FeedbackDash userid={user}   />;
   };
 
 

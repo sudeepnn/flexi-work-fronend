@@ -83,9 +83,12 @@ export const AdminParkingDash = (props: userProps) => {
                         </div>
                     </div>
                     <li><Link  to="/dashboard"><div >Dashboard</div></Link></li>
-                    <li><Link  to="/workspace"><div >Workspace</div></Link></li>
+                    <li><Link  to="/employees"><div >Employees</div></Link></li>
                     <li><Link  to="/parking"><div >Parking</div></Link></li>
+                    <li><Link  to="/workspace"><div >Workspace</div></Link></li>
+                    <li><Link  to="/venue"><div >Venue</div></Link></li>
                     <li><Link  to="/events"><div >Events</div></Link></li>
+                    <li><Link  to="/vendor"><div >Vendorstall</div></Link></li>
                     <li><Link  to="/feedback"><div >Feedback</div></Link></li>
                     
                 </ul>

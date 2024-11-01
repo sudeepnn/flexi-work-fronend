@@ -1,27 +1,29 @@
-import React from 'react'
+// Employeecard.tsx
 
-type Props = {
-    userimg:string,
-    username:string,
-    floor:string,
-    phone:string,
-    mail:string,
-    manager:string
+import React from 'react';
+import userimg from '../../resources/user.jpg'
+type EmployeecardProps = {
+  profileImage?: string;
+  username: string;
+  email: string;
+  phone: number;
+  address: string;
+  project: string|null;
+  manager: string|null;
+};
 
-}
-
-function Employeecard(myprop: Props) {
+const Employeecard = ({ profileImage, username, email, phone, address, project,manager }: EmployeecardProps) => {
   return (
-    <div className='employeecard' >
-        <img src={myprop.userimg} alt=""  />
-        <h3>{myprop.username}</h3>
-        <p>Floor: {myprop.floor}</p>
-        <p>Mail: {myprop.mail}</p>
-        <p>Phone: {myprop.phone}</p>
-        <p>Manager: {myprop.manager}</p>
-
+    <div className="employeecard">
+      <img src={profileImage || userimg} alt="Profile" />
+      <h3>{username}</h3>
+      <p>Email: {email}</p>
+      <p>Phone: {phone}</p>
+      <p>Address: {address}</p>
+      <p>Project: {project}</p>
+      <p>manager: {manager}</p>
     </div>
-  )
-}
+  );
+};
 
-export default Employeecard
+export default Employeecard;
