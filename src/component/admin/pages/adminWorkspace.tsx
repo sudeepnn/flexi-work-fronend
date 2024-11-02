@@ -6,21 +6,10 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  InputAdornment,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   TextField,
   Typography,
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
 import axios from 'axios';
 
 interface Workspace {
@@ -31,8 +20,8 @@ interface Workspace {
 }
 
 const AdminWorkspace = () => {
-  const [isFocused, setIsFocused] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
+  const [open, setOpen] = useState(false); // State for Add Workspace dialog
   const [detailsOpen, setDetailsOpen] = useState(false); // State for details dialog
   const [detailsData, setDetailsData] = useState<any>(null); // Data for details dialog
   const [formData, setFormData] = useState({
@@ -40,9 +29,6 @@ const AdminWorkspace = () => {
     project: '',
     floor: '',
   });
-  const [workspaces, setWorkspaces] = useState<Workspace[]>([]);
-  const [editMode, setEditMode] = useState(false);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   useEffect(() => {
     fetchWorkspaces();
@@ -60,50 +46,38 @@ const AdminWorkspace = () => {
   const fetchWorkspaceDetails = async (id: number) => {
     try {
       const response = await axios.get(`http://localhost:3005/api/v1/workspaceBooking/${id}`);
-      setDetailsData(response.data); // Set details data
-      setDetailsOpen(true); // Open details dialog
+      setDetailsData(response.data);
+      setDetailsOpen(true);
     } catch (error) {
       console.error('Error fetching workspace details:', error);
     }
   };
 
   const handleClickOpen = () => {
-    
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
-    setEditMode(false);
-    setSelectedId(null);
     setFormData({ workspace_id: '', project: '', floor: '' });
   };
 
   const handleDetailsClose = () => {
-    setDetailsOpen(false); // Close details dialog
-    console.log(detailsData)
+    setDetailsOpen(false);
     setDetailsData(null);
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
     try {
-      if (editMode && selectedId !== null) {
-        await axios.put(`http://localhost:3005/api/v1/workspace/${selectedId}`, {
-          workspace_id: formData.workspace_id,
-          project: formData.project,
-          floor: parseInt(formData.floor),
-        });
-      } else {
-        await axios.post('http://localhost:3005/api/v1/workspace', {
-          workspace_id: formData.workspace_id,
-          project: formData.project,
-          floor: parseInt(formData.floor),
-        });
-      }
+      await axios.post('http://localhost:3005/api/v1/workspace', {
+        workspace_id: formData.workspace_id,
+        project: formData.project,
+        floor: parseInt(formData.floor),
+      });
       handleClose();
       fetchWorkspaces();
     } catch (error) {
@@ -111,108 +85,63 @@ const AdminWorkspace = () => {
     }
   };
 
-  const handleEdit = (workspace: Workspace) => {
-    setEditMode(true);
-    setSelectedId(workspace.workspace_id);
-    setFormData({
-      workspace_id: workspace.workspace_id.toString(),
-      project: workspace.project,
-      floor: workspace.floor.toString(),
-    });
-    setOpen(true);
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      await axios.delete(`http://localhost:3005/api/v1/workspace/${id}`);
-      fetchWorkspaces();
-    } catch (error) {
-      console.error('Error deleting workspace:', error);
-    }
-  };
+  // Group workspaces by project
+  const groupedWorkspaces = workspaces.reduce((acc, workspace) => {
+    (acc[workspace.project] = acc[workspace.project] || []).push(workspace);
+    return acc;
+  }, {} as Record<string, Workspace[]>);
 
   return (
     <Box p={3}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h5">Workspace Bookings</Typography>
-        <TextField
-          variant="outlined"
-          placeholder="Search"
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: isFocused ? '#016375' : 'gray',
-              },
-              '&:hover fieldset': {
-                borderColor: isFocused ? '#016375' : 'darkgray',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#016375',
-              },
-            },
-          }}
-        />
         <Button
           variant="contained"
           color="primary"
           startIcon={<AddIcon />}
           onClick={handleClickOpen}
-          sx={{ mt: 3, mb: 2, backgroundColor: '#016375', borderRadius: '15px' }}
+          sx={{ backgroundColor: '#016375', borderRadius: '15px' }}
         >
           Add Workspace
         </Button>
       </Box>
 
-      <TableContainer component={Paper}>
-        <Table stickyHeader>
-          <TableHead>
-            <TableRow>
-              <TableCell>No</TableCell>
-              <TableCell>Workspace ID</TableCell>
-              <TableCell>Project</TableCell>
-              <TableCell>Floor</TableCell>
-              <TableCell>Availability</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {workspaces.map((workspace, index) => (
-              <TableRow key={workspace.workspace_id}>
-                <TableCell>{index + 1}</TableCell>
-                <TableCell>{workspace.workspace_id}</TableCell>
-                <TableCell>{workspace.project}</TableCell>
-                <TableCell>{workspace.floor}</TableCell>
-                <TableCell>{workspace.availability ? 'Available' : 'Unavailable'}</TableCell>
-                <TableCell>
-                  <Button onClick={() => handleEdit(workspace)} color="primary" startIcon={<EditIcon />}>
-                    Edit
-                  </Button>
-                  <Button onClick={() => handleDelete(workspace.workspace_id)} color="secondary" startIcon={<DeleteIcon />}>
-                    Delete
-                  </Button>
-                  {!workspace.availability && (
-                    <Button onClick={() => fetchWorkspaceDetails(workspace.workspace_id)} color="info">
-                      Details
-                    </Button>
-                  )}
-                </TableCell>
-              </TableRow>
+      {/* Display workspaces grouped by project */}
+      {Object.keys(groupedWorkspaces).map((project) => (
+        <Box key={project} mb={3}>
+          <Typography variant="h6" gutterBottom>
+            {project}
+          </Typography>
+          <Box display="flex" flexWrap="wrap" gap={2}>
+            {groupedWorkspaces[project].map((workspace) => (
+              <Button
+                key={workspace.workspace_id}
+                onClick={() => fetchWorkspaceDetails(workspace.workspace_id)}
+                sx={{
+                  width: 100,
+                  height: 100,
+                  backgroundColor: workspace.availability ? 'green' : 'red',
+                  color: 'white',
+                  borderRadius: '8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '14px',
+                  '&:hover': {
+                    backgroundColor: workspace.availability ? '#006400' : '#8B0000',
+                  },
+                }}
+              >
+                {workspace.workspace_id}
+              </Button>
             ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </Box>
+        </Box>
+      ))}
 
+      {/* Add Workspace Dialog */}
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{editMode ? 'Edit Workspace Slot Details' : 'Add Workspace Slot Details'}</DialogTitle>
+        <DialogTitle>Add Workspace Slot Details</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -251,7 +180,7 @@ const AdminWorkspace = () => {
             Cancel
           </Button>
           <Button onClick={handleSubmit} color="primary">
-            {editMode ? 'Update' : 'Submit'}
+            Submit
           </Button>
         </DialogActions>
       </Dialog>
@@ -261,19 +190,14 @@ const AdminWorkspace = () => {
         <DialogTitle>Workspace Details</DialogTitle>
         <DialogContent>
           {detailsData ? (
-            
-            <div>
-              <Typography>Workspace_id: {detailsData.workspace_id}</Typography>
+            <Box>
+              <Typography>Workspace ID: {detailsData.workspace_id}</Typography>
               <Typography>Name: {detailsData.name}</Typography>
-              <Typography>Employee Id: {detailsData.user_id}</Typography>
+              <Typography>Employee ID: {detailsData.user_id}</Typography>
               <Typography>Project: {detailsData.project}</Typography>
               <Typography>Floor: {detailsData.floor}</Typography>
               <Typography>Booking Date: {detailsData.Booking_start_time}</Typography>
-              
-              
-              
-              {/* Add any other fields here */}
-            </div>
+            </Box>
           ) : (
             <Typography>Loading details...</Typography>
           )}

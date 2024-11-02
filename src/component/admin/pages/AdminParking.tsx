@@ -1,297 +1,296 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { Box, Typography, Button, MenuItem, InputLabel, FormControl, Select, SelectChangeEvent, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import axios from 'axios';
-import {
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  InputAdornment,
-  Paper,
-  Snackbar,  // Import Snackbar
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TextField,
-  Typography,
-  MenuItem,
-} from '@mui/material';
-import Alert from '@mui/material/Alert'; // Import Alert
-import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
 
-interface Booking {
-  userId?: string;
-  name:string
+interface Slot {
+  _id: string;
+  slot_number: string;
+  direction: string;
+  available: boolean;
+}
+
+interface BookingDetails {
+  userId: string;
+  name: string;
   vehicalnumber: string;
   contact: number;
-  startTime: Date;
-  slot_number: string;
-  _id: string;
+  startTime: string;
 }
 
-interface AllBookingDetails {
-  _id: string;
-  slot_number: string;
-  floor: number;
-  parkingtype: string;
-  available: boolean;
-  booking: Booking;
-}
+const ParkingLayout: React.FC = () => {
+  const [floorNumber, setFloorNumber] = useState<string[]>([]);
+  const [area, setArea] = useState('');
+  const [selectedFloor, setSelectedFloor] = useState('');
+  const [vehicleType, setVehicleType] = useState('');
+  const [blocks, setBlocks] = useState<string[]>([]);
+  const [selectedBlock, setSelectedBlock] = useState('');
+  const [eastSlots, setEastSlots] = useState<Slot[]>([]);
+  const [westSlots, setWestSlots] = useState<Slot[]>([]);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [bookingDetails, setBookingDetails] = useState<BookingDetails | null>(null);
 
-const AdminParking: React.FC = () => {
-  const [bookings, setBookings] = useState<AllBookingDetails[]>([]);
-  const [isFocused, setIsFocused] = useState(false);
-  const [openAdd, setOpenAdd] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
-  const [openView, setOpenView] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState<AllBookingDetails | null>(null);
-  const [formData, setFormData] = useState({
-    floor: '',
-    parkingSlot: '',
-    parkingType: '',
-  });
-  const [snackbarOpen, setSnackbarOpen] = useState(false); // Snackbar open state
-  const [snackbarMessage, setSnackbarMessage] = useState(''); // Snackbar message
-  const [snackbarSeverity, setSnackbarSeverity] = useState<'success' | 'error'>('success'); // Snackbar severity
+  const showdetails = async (slotId: string) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/v1/parkingslotdetails/${slotId}`);
+      const slotData = response.data;
 
-  useEffect(() => {
-    axios.get('http://localhost:3000/api/v1/parking')
-      .then((response) => setBookings(response.data))
-      .catch((error) => console.error('Error fetching parking data:', error));
-  }, []);
-
-  const fetchBookings = () => {
-    axios.get('http://localhost:3000/api/v1/parking')
-      .then((response) => setBookings(response.data))
-      .catch((error) => console.error('Error fetching parking data:', error));
-  };
-
-  const handleClickOpenAdd = () => setOpenAdd(true);
-  const handleCloseAdd = () => setOpenAdd(false);
-  const handleClickOpenEdit = (booking: AllBookingDetails) => {
-    setSelectedBooking(booking);
-    setFormData({
-      floor: booking.floor.toString(),
-      parkingSlot: booking.slot_number,
-      parkingType: booking.parkingtype,
-    });
-    setOpenEdit(true);
-  };
-  const handleCloseEdit = () => {
-    setFormData({ floor: '', parkingSlot: '', parkingType: '' });
-    setOpenEdit(false);
-    setSelectedBooking(null);
-  };
-  
-  const handleClickOpenView = (booking: AllBookingDetails) => {
-    setSelectedBooking(booking);
-    setOpenView(true);
-  };
-  const handleCloseView = () => {
-    setOpenView(false);
-    setSelectedBooking(null);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = () => {
-    axios.post('http://localhost:3000/api/v1/parking', {
-      floor: formData.floor,
-      parkingtype: formData.parkingType,
-      slot_number: formData.parkingSlot,
-    })
-      .then((response) => {
-        // Fetch bookings again to refresh the list
-        fetchBookings();
-        setFormData({ floor: '', parkingSlot: '', parkingType: '' });
-        handleCloseAdd();
-        setSnackbarMessage('Parking slot added successfully!');
-        setSnackbarSeverity('success');
-        setSnackbarOpen(true);
-      })
-      .catch((error) => {
-        console.error('Error submitting parking data:', error);
-        setSnackbarMessage('Failed to add parking slot.');
-        setSnackbarSeverity('error');
-        setSnackbarOpen(true);
-      });
-  };
-  const handleEditBooking = () => {
-    if (selectedBooking) {
-      axios.put(`http://localhost:3000/api/v1/parking/${selectedBooking._id}`, {
-        floor: formData.floor,
-        parkingtype: formData.parkingType,
-        slot_number: formData.parkingSlot,
-      })
-        .then((response) => {
-          const updatedBookings = bookings.map((b) => (b._id === selectedBooking._id ? response.data : b));
-          setBookings(updatedBookings);
-          setFormData({ floor: '', parkingSlot: '', parkingType: '' });
-          handleCloseEdit();
-        })
-        .catch((error) => console.error('Error editing booking:', error));
+      // Open dialog only if the slot is booked (i.e., not available)
+      if (!slotData.available && slotData.booking) {
+        setBookingDetails(slotData.booking);
+        setDialogOpen(true);
+      } else {
+        console.log("This slot is available. No booking details.");
+      }
+    } catch (error) {
+      console.error('Error fetching slot details:', error);
     }
   };
 
-  const handleDeleteBooking = (id: string) => {
-    axios.delete(`http://localhost:3000/api/v1/parking/${id}`)
-      .then(() => setBookings(bookings.filter((b) => b._id !== id)))
-      .catch((error) => console.error('Error deleting booking:', error));
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setBookingDetails(null);
   };
 
-  const handleSnackbarClose = () => {
-    setSnackbarOpen(false);
+  const handleAreaChange = async (event: SelectChangeEvent<string>) => {
+    const selectedArea = event.target.value;
+    setArea(selectedArea);
+    setFloorNumber([]);
+    setSelectedFloor('');
+    setVehicleType('');
+    setBlocks([]);
+    setSelectedBlock('');
+    setEastSlots([]);
+    setWestSlots([]);
+    await fetchFloors(selectedArea);
+  };
+
+  const handleFloorChange = async (event: SelectChangeEvent<string>) => {
+    const selectedFloor = event.target.value;
+    setSelectedFloor(selectedFloor);
+    setVehicleType('');
+    setBlocks([]);
+    setSelectedBlock('');
+    setEastSlots([]);
+    setWestSlots([]);
+  };
+
+  const handleVehicleTypeChange = async (event: SelectChangeEvent<string>) => {
+    const selectedVehicleType = event.target.value;
+    setVehicleType(selectedVehicleType);
+    setBlocks([]);
+    setSelectedBlock('');
+    setEastSlots([]);
+    setWestSlots([]);
+    await fetchBlocks(area, selectedFloor, selectedVehicleType);
+  };
+
+  const handleBlockChange = async (event: SelectChangeEvent<string>) => {
+    const selectedBlock = event.target.value;
+    setSelectedBlock(selectedBlock);
+    setEastSlots([]);
+    setWestSlots([]);
+    await fetchSlots(area, selectedFloor, vehicleType, selectedBlock);
+  };
+
+  const fetchFloors = async (selectedArea: string) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/v1/parkingFloor/${selectedArea}`);
+      setFloorNumber(response.data.floors || []);
+    } catch (error) {
+      console.error('Error fetching floors:', error);
+      setFloorNumber([]);
+    }
+  };
+
+  const fetchBlocks = async (selectedArea: string, selectedFloor: string, selectedVehicleType: string) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/v1/parking/block/${selectedArea}/${selectedFloor}/${selectedVehicleType}`);
+      setBlocks(response.data.blocks || []);
+    } catch (error) {
+      console.error('Error fetching blocks:', error);
+      setBlocks([]);
+    }
+  };
+
+  const fetchSlots = async (selectedArea: string, selectedFloor: string, selectedVehicleType: string, selectedBlock: string) => {
+    try {
+      const response = await axios.get(`http://localhost:3000/api/v1/parkingSlots/${selectedArea}/${selectedFloor}/${selectedVehicleType}/${selectedBlock}`);
+      const slots = response.data.slots || [];
+      setEastSlots(slots.filter((slot: Slot) => slot.direction === 'E'));
+      setWestSlots(slots.filter((slot: Slot) => slot.direction === 'W'));
+    } catch (error) {
+      console.error('Error fetching slots:', error);
+      setEastSlots([]);
+      setWestSlots([]);
+    }
   };
 
   return (
-    <Box p={3}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-        <Typography variant="h5">Parking Bookings</Typography>
-        <TextField
-          variant="outlined"
-          placeholder="Search"
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': { borderColor: isFocused ? '#016375' : 'gray' },
-              '&:hover fieldset': { borderColor: isFocused ? '#016375' : 'darkgray' },
-              '&.Mui-focused fieldset': { borderColor: '#016375' },
-            },
-          }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<AddIcon />}
-          onClick={handleClickOpenAdd}
-          sx={{ mt: 3, mb: 2, backgroundColor: '#016375', borderRadius: '15px' }}
-        >
-          Add Parking
-        </Button>
-      </Box>
+    <>
+      <div className="parkhead">
+        <h2>Parking</h2>
+      </div>
 
-      <TableContainer component={Paper}>
-        <Box sx={{ maxHeight: 400, overflowY: 'auto' }}>
-          <Table stickyHeader>
-            <TableHead>
-              <TableRow>
-                <TableCell>No</TableCell>
-                <TableCell>Parking Slot</TableCell>
-                <TableCell>Floor</TableCell>
-                <TableCell>Type</TableCell>
-                <TableCell>Booking Status</TableCell>
-                <TableCell>Actions</TableCell> {/* Added Actions Column */}
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {bookings.map((booking, index) => (
-                <TableRow key={booking._id} >
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell>{booking.slot_number}</TableCell>
-                  <TableCell>{booking.floor}</TableCell>
-                  <TableCell>{booking.parkingtype}</TableCell>
-                  <TableCell>{booking.available ? 'Available' : 'Booked'}</TableCell>
-                  <TableCell>
-                    { (
-                      <>
-                        { !booking.available && <Button onClick={() => handleClickOpenView(booking)} color="primary">Details</Button>}
-                        <Button onClick={() => handleClickOpenEdit(booking)} color="primary">Edit</Button>
-                        <Button onClick={() => handleDeleteBooking(booking._id)} color="secondary">Delete</Button>
-                      </>
-                    )}
-                  </TableCell>
-                </TableRow>
+      <div className="parkcontent">
+        <div className="formscontainer">
+          {/* Area Dropdown */}
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="area-select-label">Area</InputLabel>
+            <Select
+              labelId="area-select-label"
+              name="area"
+              value={area}
+              onChange={handleAreaChange}
+              label="Area"
+              required
+            >
+              <MenuItem value="Front-Gate">Front Gate</MenuItem>
+              <MenuItem value="MLCP">MLCP</MenuItem>
+            </Select>
+          </FormControl>
+
+          {/* Floor Dropdown */}
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="floor-select-label">Floor</InputLabel>
+            <Select
+              labelId="floor-select-label"
+              value={selectedFloor}
+              onChange={handleFloorChange}
+              label="Floor"
+              required
+            >
+              {floorNumber.map((floor, index) => (
+                <MenuItem key={index} value={floor}>
+                  {floor}
+                </MenuItem>
               ))}
-            </TableBody>
-          </Table>
-        </Box>
-      </TableContainer>
+            </Select>
+          </FormControl>
 
-      {/* Add Parking Dialog */}
-      <Dialog open={openAdd} onClose={handleCloseAdd}>
-        <DialogTitle>Add Parking Slot Details</DialogTitle>
-        <DialogContent>
-          <TextField autoFocus margin="dense" name="floor" label="Floor" fullWidth variant="outlined" value={formData.floor} onChange={handleChange} />
-          <TextField margin="dense" name="parkingSlot" label="Parking Slot No" fullWidth variant="outlined" value={formData.parkingSlot} onChange={handleChange} />
-          <TextField select margin="dense" name="parkingType" label="Parking Type" fullWidth variant="outlined" value={formData.parkingType} onChange={handleChange}>
-            <MenuItem value="2-wheeler">2-Wheeler</MenuItem>
-            <MenuItem value="4-wheeler">4-Wheeler</MenuItem>
-          </TextField>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseAdd}>Cancel</Button>
-          <Button onClick={handleSubmit}>Add</Button>
-        </DialogActions>
-      </Dialog>
+          {/* Vehicle Type Dropdown */}
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="vehicle-type-select-label">Vehicle Type</InputLabel>
+            <Select
+              labelId="vehicle-type-select-label"
+              value={vehicleType}
+              onChange={handleVehicleTypeChange}
+              label="Vehicle Type"
+              required
+            >
+              <MenuItem value="2-wheeler">2-wheeler</MenuItem>
+              <MenuItem value="4-wheeler">4-wheeler</MenuItem>
+            </Select>
+          </FormControl>
 
-      {/* Edit Parking Dialog */}
-      <Dialog open={openEdit} onClose={handleCloseEdit}>
-        <DialogTitle>Edit Parking Slot Details</DialogTitle>
-        <DialogContent>
-          <TextField autoFocus margin="dense" name="floor" label="Floor" fullWidth variant="outlined" value={formData.floor} onChange={handleChange} />
-          <TextField margin="dense" name="parkingSlot" label="Parking Slot No" fullWidth variant="outlined" value={formData.parkingSlot} onChange={handleChange} />
-          <TextField select margin="dense" name="parkingType" label="Parking Type" fullWidth variant="outlined" value={formData.parkingType} onChange={handleChange}>
-            <MenuItem value="2-wheeler">2-Wheeler</MenuItem>
-            <MenuItem value="4-wheeler">4-Wheeler</MenuItem>
-          </TextField>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseEdit}>Cancel</Button>
-          <Button onClick={handleEditBooking}>Save</Button>
-        </DialogActions>
-      </Dialog>
+          {/* Block Dropdown */}
+          <FormControl fullWidth margin="normal">
+            <InputLabel id="block-select-label">Block</InputLabel>
+            <Select
+              labelId="block-select-label"
+              value={selectedBlock}
+              onChange={handleBlockChange}
+              label="Block"
+              required
+            >
+              {blocks.map((block, index) => (
+                <MenuItem key={index} value={block}>
+                  {block}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </div>
 
-     
+        {/* Display Selected Block and Slots */}
+        {selectedBlock && (
+          <div className="completeblock">
+            <div className="blockname">
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '2px solid black',
+                  height: '100px',
+                  bgcolor: 'yellow',
+                }}
+              >
+                <Typography variant="h6" sx={{ color: 'black' }}>{selectedBlock}</Typography>
+              </Box>
+            </div>
+            <div className="parkingslots">
+              {/* East Slots */}
+              <div className="topslots">
+                {eastSlots.map((slot) => (
+                  <Button
+                    key={slot._id}
+                    variant="contained"
+                    onClick={() => showdetails(slot._id)}
+                    sx={{
+                      height: '50px',
+                      bgcolor: slot.available ? 'darkgreen' : 'darkred',
+                      color: 'white',
+                      '&:hover': {
+                        bgcolor: slot.available ? 'darkgreen' : 'darkred'
+                      }
+                    }}
+                    fullWidth
+                  >
+                    {slot.slot_number}
+                  </Button>
+                ))}
+              </div>
 
-<Dialog open={openView} onClose={handleCloseView}>
+              {/* West Slots */}
+              <div className="downslots">
+                {westSlots.map((slot) => (
+                  <Button
+                    key={slot._id}
+                    variant="contained"
+                    onClick={() => showdetails(slot._id)}
+                    sx={{
+                      height: '50px',
+                      bgcolor: slot.available ? 'darkgreen' : 'darkred',
+                      color: 'white',
+                      '&:hover': {
+                        bgcolor: slot.available ? 'darkgreen' : 'darkred'
+                      }
+                    }}
+                    fullWidth
+                  >
+                    {slot.slot_number}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Dialog for Booking Details */}
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Booking Details</DialogTitle>
         <DialogContent>
-          {selectedBooking && (
+          {bookingDetails ? (
             <>
-              <Typography variant="body1"><strong>Slot Number:</strong> {selectedBooking.slot_number}</Typography>
-              <Typography variant="body1"><strong>Floor:</strong> {selectedBooking.floor}</Typography>
-              <Typography variant="body1"><strong>Type:</strong> {selectedBooking.parkingtype}</Typography>
-              <Typography variant="body1"><strong>Booking Status:</strong> {selectedBooking.available ? 'Available' : 'Booked'}</Typography>
-              {selectedBooking.booking && (
-                <>
-                  <Typography variant="body1"><strong>User ID:</strong> {selectedBooking.booking.userId}</Typography>
-                  <Typography variant="body1"><strong>User Name:</strong> {selectedBooking.booking.name}</Typography>
-                  <Typography variant="body1"><strong>Vehicle Number:</strong> {selectedBooking.booking.vehicalnumber}</Typography>
-                  <Typography variant="body1"><strong>Contact:</strong> {selectedBooking.booking.contact}</Typography>
-                  <Typography variant="body1"><strong>Start Time:</strong> {new Date(selectedBooking.booking.startTime).toLocaleString()}</Typography>
-                </>
-              )}
+              <Typography>User ID: {bookingDetails.userId}</Typography>
+              <Typography>Name: {bookingDetails.name}</Typography>
+              <Typography>Vehicle Number: {bookingDetails.vehicalnumber}</Typography>
+              <Typography>Contact: {bookingDetails.contact}</Typography>
+              <Typography>Start Time: {bookingDetails.startTime}</Typography>
             </>
+          ) : (
+            <Typography>No booking details available.</Typography>
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseView}>Close</Button>
+          <Button onClick={handleCloseDialog} color="primary">
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
-
-      {/* Snackbar for messages */}
-      <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleSnackbarClose}>
-        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
-          {snackbarMessage}
-        </Alert>
-      </Snackbar>
-    </Box>
+    </>
   );
 };
 
-export default AdminParking;
+export default ParkingLayout;

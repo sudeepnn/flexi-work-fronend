@@ -121,4 +121,42 @@
     transform: rotate(-45deg);
     position: absolute;
   }
+  .userdashboardcard{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 300px;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 5px;
+  }
+  .userdashboardcard .userdashboardcardtop{
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    
+  }
+  .userdashboardcard .userdashboardcardbelow{
+    width: 80%;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-direction: column;
+    
+  }
+  .parking-card-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 10px;
+    margin: 10px;
+  }
   
+  .userdashboardcardbelow button:hover{
+    cursor: pointer;
+    
+    
+  }

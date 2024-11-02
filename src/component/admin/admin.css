@@ -64,7 +64,7 @@ body{
 }
 
 .employeecard h3{
-  
+ 
     font-family: "Poppins", serif;
     font-weight: 400;
     font-style: normal;
@@ -87,4 +87,62 @@ body{
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   padding: 20px;
+}
+
+.completeblock{
+  display: flex;
+  flex-direction: row;
+  margin-top: 50px;
+
+
+}
+
+.blockname{
+  width:100px;
+  margin: 10px;
+}
+
+.parkhead{
+  padding: 30px;
+  font-family: "Poppins", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+.parkingslots{
+  height: 50%;
+  width: 75%;
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  margin: 10px;
+  gap: 10px;
+  
+
+}
+.formscontainer{
+  width: 60%;
+}
+.topslots{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.downslots{
+  display: flex;
+  flex-direction: row;
+  gap:10px
+}
+
+.parkcontent{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 30px;
+
+ 
+}
+.parkcontent .FormControl{
+  width: 50%;
 }
