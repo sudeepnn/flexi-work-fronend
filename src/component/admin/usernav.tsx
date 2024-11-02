@@ -6,6 +6,10 @@ import userimg from '../resources/user.jpg';
 import './admin.css';
 import { jwtDecode } from 'jwt-decode';
 
+type allprojecttype={
+  projectname:string
+}
+
 type Props = {
   username: string | null;
 };
@@ -18,6 +22,7 @@ const UserNav = (props: Props) => {
   const [phone, setPhone] = useState('');
   const [isOnDcMember, setIsOnDcMember] = useState('');
   const [project, setProject] = useState('');
+  const [allproject, setAllproject] = useState('');
   const [manager, setManager] = useState('');
   const [profilePic, setProfilePic] = useState(userimg); // Default profile picture
   const [fileInput, setFileInput] = useState<File | null>(null); // State for file input
