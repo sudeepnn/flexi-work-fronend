@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 // import { Dashboard, UserDashboard } from './Dashboard';
 import axios from 'axios';
 import {jwtDecode} from 'jwt-decode'; 
-import { Dashboard, UserDashboard } from '../dashboards/Dashboard';
+import { Dashboard, Managerdashboard, Securitydashboard, UserDashboard, Vendordashboard } from '../dashboards/Dashboard';
 
 type DecodedToken = {
     userId: string; 
@@ -52,8 +52,22 @@ const Dashboardhandling: React.FC<Props> = () => {
     return <Navigate to="/login" />;
   }
 
+  switch (role) {
+    case 'admin':
+      return <Dashboard />;
+    case 'employee':
+      return <UserDashboard userid={user}   />;
+    case 'vendor':
+      return <Vendordashboard />;
+    case 'manager':
+      return <Managerdashboard />;
+    case 'security':
+      return <Securitydashboard />;
+    default:
+      return <div>No access</div>; // Handle unauthorized access or unknown roles
+  }
   // Render different dashboards based on the role
-  return role === 'admin' ? <Dashboard /> : <UserDashboard userid={user}   />;
+  // return role === 'admin' ? <Dashboard /> : <UserDashboard userid={user}   />;
 };
 
 export default Dashboardhandling;

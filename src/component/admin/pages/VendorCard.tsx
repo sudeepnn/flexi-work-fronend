@@ -9,11 +9,12 @@ type VendorProps = {
     avalablestatus: boolean;
     bookings: any[]; // Adjust the type based on the structure of bookings
   };
+  onClick: () => void; // Add the onClick prop
 };
 
-const VendorCard: React.FC<VendorProps> = ({ vendor }) => {
+const VendorCard: React.FC<VendorProps> = ({ vendor, onClick }) => {
   return (
-    <div className="vendor-card">
+    <div className="vendor-card" onClick={onClick}> {/* Attach onClick to the card */}
       <img src={vendor.imgurl} alt={vendor.stallname} />
       <h3>{vendor.stallname}</h3>
       <p>Rent: ₹{vendor.rent}</p>

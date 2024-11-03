@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import EventsRegister from '../user/event_registration';
 import AdminEvent from '../admin/pages/AdminEvent';
 import AdminVendor from '../admin/pages/AdminVendor';
+import VendorUser from '../admin/pages/VendorUser';
 
 type Props = {};
 type userProps = {
@@ -32,11 +33,9 @@ export const VendoruserDash = (props: userProps) => {
                             <a href="#">Brand</a>
                         </div>
                     </div>
-                    <li><Link  to="/dashboard"><div >Dashboard</div></Link></li>
-                    <li><Link  to="/workspace"><div >Workspace</div></Link></li>
-                    <li><Link  to="/parking"><div >Parking</div></Link></li>
-                    <li><Link  to="/events"><div >Events</div></Link></li>
-                    <li><Link  to="/feedback"><div >Feedback</div></Link></li>
+                    <li><Link to="/dashboard"><div>Dashboard</div></Link></li>
+                    <li><Link to="/vendor"><div>Vendorstall</div></Link></li>
+                    <li><Link to="/logout"><div>Logout</div></Link></li>
                     
                 </ul>
             </nav>
@@ -53,7 +52,7 @@ export const VendoruserDash = (props: userProps) => {
                         <div className="col-lg-8 col-lg-offset-2">
                             <Usernav username={props.userid} />
                             
-                              <EventsRegister/>
+                              <VendorUser/>
                                 
                                 
                             

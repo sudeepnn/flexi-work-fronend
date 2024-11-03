@@ -53,10 +53,17 @@ const Vendorhandler = (props: Props) => {
     if (!role) {
       return <Navigate to="/login" />;
     }
-  
+    switch (role) {
+      case 'admin':
+        return <VendorAdminDash userid={"admin"} /> ;
+      case 'vendor':
+        return <VendoruserDash userid={user}   />;
+        default:
+          return <div>No access</div>;
+    }
     // Render different dashboards based on the role
-    return role === 'admin' ? <VendorAdminDash userid={"admin"} /> : <VendoruserDash userid={user}   />;
+   
   };
 
 
-export default Vendorhandler
+export default Vendorhandler;
