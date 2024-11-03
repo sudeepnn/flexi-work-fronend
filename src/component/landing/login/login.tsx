@@ -20,7 +20,7 @@ const LoginForm: React.FC = () => {
   const [formData, setFormData] = useState({
     user_id: '',
     password: '',
-    role: '',
+   
   });
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -108,14 +108,14 @@ const LoginForm: React.FC = () => {
               onChange={handleChange}
               required
             />
-            <FormControl fullWidth margin="normal">
-              <InputLabel id="role-select-label">Role</InputLabel>
+            {/* <FormControl fullWidth margin="normal">
+              <InputLabel id="role-select-label">Designation</InputLabel>
               <Select
                 labelId="role-select-label"
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                label="Role"
+                label="Designation"
                 required
               >
                 <MenuItem value="employee">Employee</MenuItem>
@@ -124,7 +124,7 @@ const LoginForm: React.FC = () => {
                 <MenuItem value="security">Security</MenuItem>
                 <MenuItem value="admin">Admin</MenuItem>
               </Select>
-            </FormControl>
+            </FormControl> */}
             <Button
               type="submit"
               fullWidth

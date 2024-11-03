@@ -45,9 +45,11 @@ const AdminWorkspace = () => {
 
   const fetchWorkspaceDetails = async (id: number) => {
     try {
-      const response = await axios.get(`http://localhost:3005/api/v1/workspaceBooking/${id}`);
-      setDetailsData(response.data);
+      console.log(id);
+      const response = await axios.get(`http://localhost:3005/api/v1/workspacess/bookings/${id}`);
+      setDetailsData(response.data.bookings); // Set the bookings array
       setDetailsOpen(true);
+      console.log(detailsData)
     } catch (error) {
       console.error('Error fetching workspace details:', error);
     }
@@ -116,7 +118,7 @@ const AdminWorkspace = () => {
             {groupedWorkspaces[project].map((workspace) => (
               <Button
                 key={workspace.workspace_id}
-                onClick={() => fetchWorkspaceDetails(workspace.workspace_id)}
+                onClick={() =>  !workspace.availability && fetchWorkspaceDetails(workspace.workspace_id)}
                 sx={{
                   width: 100,
                   height: 100,
@@ -187,27 +189,32 @@ const AdminWorkspace = () => {
 
       {/* Details Dialog */}
       <Dialog open={detailsOpen} onClose={handleDetailsClose}>
-        <DialogTitle>Workspace Details</DialogTitle>
-        <DialogContent>
-          {detailsData ? (
-            <Box>
-              <Typography>Workspace ID: {detailsData.workspace_id}</Typography>
-              <Typography>Name: {detailsData.name}</Typography>
-              <Typography>Employee ID: {detailsData.user_id}</Typography>
-              <Typography>Project: {detailsData.project}</Typography>
-              <Typography>Floor: {detailsData.floor}</Typography>
-              <Typography>Booking Date: {detailsData.Booking_start_time}</Typography>
-            </Box>
-          ) : (
-            <Typography>Loading details...</Typography>
-          )}
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDetailsClose} color="primary">
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
+  <DialogTitle>Workspace Booking Details</DialogTitle>
+  <DialogContent>
+    {detailsData ? (
+      detailsData.length > 0 ? (
+        detailsData.map((booking: any, index: number) => (
+          <Box key={index} mb={2} borderBottom="1px solid #ccc" pb={2}>
+            <Typography>Booking #{index + 1}</Typography>
+            <Typography>Name: {booking.name}</Typography>
+            <Typography>Employee ID: {booking.userId}</Typography>
+            <Typography>Contact: {booking.contact}</Typography>
+            <Typography>Booking Start Time: {new Date(booking.startTime).toLocaleString()}</Typography>
+          </Box>
+        ))
+      ) : (
+        <Typography>No bookings available for this workspace.</Typography>
+      )
+    ) : (
+      <Typography>Loading details...</Typography>
+    )}
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={handleDetailsClose} color="primary">
+      Close
+    </Button>
+  </DialogActions>
+</Dialog>
     </Box>
   );
 };

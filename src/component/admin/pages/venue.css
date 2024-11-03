@@ -1,0 +1,43 @@
+.allvenue {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive columns */
+    gap: 16px; /* Space between cards */
+    padding: 16px; /* Padding around the grid */
+  }
+  
+  .venue-card {
+    background-color: #fff; /* Background color for cards */
+    border: 1px solid #e0e0e0; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    overflow: hidden; /* Ensure content doesn't overflow */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    transition: transform 0.2s; /* Smooth transition for hover effect */
+  }
+  
+  .venue-card:hover {
+    transform: translateY(-4px); /* Lift card on hover */
+  }
+  
+  .venue-card img {
+    width: 100%; /* Responsive image */
+    height: auto; /* Maintain aspect ratio */
+  }
+  
+  .venue-card h4 {
+    margin: 16px; /* Margin for the title */
+    font-size: 1.2rem; /* Font size */
+  }
+  
+  .venue-card p {
+    margin: 0 16px 16px; /* Margin for paragraphs */
+    font-size: 1rem; /* Font size */
+    color: #555; /* Color for text */
+  }
+.adminevent{
+    text-align: left;
+   
+} 
+.adminevent h3{
+    margin: 10px;
+    transform: translateX(10px);
+}

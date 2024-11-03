@@ -1,0 +1,55 @@
+/* styles.css */
+
+/* Overall container for the vendor list */
+.vendor-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between vendor cards */
+    padding: 20px;
+  }
+  
+  /* Individual vendor card styling */
+  .vendor-card {
+    border: 1px solid #ccc; /* Light border around the card */
+    border-radius: 8px; /* Rounded corners */
+    width: 200px; /* Fixed width for the cards */
+    overflow: hidden; /* Prevent content overflow */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    transition: transform 0.2s; /* Smooth hover effect */
+  }
+  
+  /* Image inside the vendor card */
+  .vendor-card img {
+    width: 100%; /* Make image take the full width */
+    height: 150px; /* Maintain aspect ratio */
+  }
+  
+  /* Title of the vendor card */
+  .vendor-card h3 {
+    /* Title size */
+    margin: 5px 10px; /* Margin around title */
+     /* Center align the title */
+  }
+  
+  /* Rent and status styling */
+  .vendor-card p {
+    font-size: 1rem; /* Font size for text */
+    margin: 5px 10px; /* Margin around text */
+  }
+  
+  /* Status text styling */
+  .vendor-card p:last-of-type {
+    font-weight: bold; /* Bold for status */
+  }
+  
+  /* Hover effect for vendor cards */
+  .vendor-card:hover {
+    transform: scale(1.05); /* Slightly enlarge on hover */
+  }
+  
+  /* General styling for the header */
+  h1 {
+    text-align: center; /* Center the header */
+    margin-bottom: 20px; /* Space below the header */
+  }
+  

@@ -14,6 +14,7 @@
     font-family: "Poppins", serif;
   font-weight: 300;
   font-style: normal;
+ 
   font-size: 13px;
 }
 .userdashboardcardtop{
@@ -43,4 +44,9 @@
     font-weight: 700;
     font-style: normal;
     font-size: 25px;
+}
+
+.workspaceslots{
+    width: 80%;
+    padding: 10px;
 }

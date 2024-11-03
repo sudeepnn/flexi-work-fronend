@@ -40,7 +40,7 @@ const ParkingCard: React.FC<ParkingDetails> = ({ _id, area, block, slot_number, 
             <p>Area: {area}</p>
             <p>floor: {floor}</p>
             <p>Parking type: {parkingtype}</p>
-            <button onClick={() => onCancel(_id)} style={{ marginTop: '10px', padding: '8px 12px', backgroundColor: '#bd79f1', color: 'white', border: 'none', borderRadius: '4px' }}>
+            <button onClick={() => onCancel(_id)} style={{ marginTop: '10px', padding: '8px 12px', backgroundColor: '#bd79f1', color: 'black', border: 'none', borderRadius: '4px' }}>
                 Cancel
           </button>
             </div>

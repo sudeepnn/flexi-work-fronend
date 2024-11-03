@@ -22,6 +22,8 @@ import { AdminWorkspacedash, UserWorkspace } from './component/dashboards/worksp
 import { UserEventDash } from './component/dashboards/event_dash';
 import { FeedbackDash } from './component/dashboards/Feedback_dash';
 import Adminvenue from './component/admin/venue/AdminEvenue';
+import Vendorhandler from './component/route_handler/Vendor_handler';
+import Logout from './component/landing/Logout';
 
 
 const App: React.FC = () => {
@@ -36,6 +38,8 @@ const App: React.FC = () => {
         <Route path="/workspace" element={<Workspacehandler />} />
         <Route path="/events" element={<EventRegistrehandler />} />
         <Route path="/feedback" element={<FeedbackHandler />} />
+        <Route path="/vendor" element={<Vendorhandler />} />
+        <Route path="/logout" element={<Logout />} />
         
         <Route path="/employees" element={<AdminEmployee />} />
         <Route path="/venue" element={<Adminvenue />} />

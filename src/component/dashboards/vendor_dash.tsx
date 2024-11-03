@@ -6,13 +6,14 @@ import { Link } from 'react-router-dom';
 
 import EventsRegister from '../user/event_registration';
 import AdminEvent from '../admin/pages/AdminEvent';
+import AdminVendor from '../admin/pages/AdminVendor';
 
 type Props = {};
 type userProps = {
     userid:string |null
 };
 
-export const UserEventDash = (props: userProps) => {
+export const VendoruserDash = (props: userProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleSidebar = () => {
@@ -64,7 +65,7 @@ export const UserEventDash = (props: userProps) => {
     );
 };
 
-export const AdminEventDash = (props: userProps) => {
+export const VendorAdminDash = (props: userProps) => {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleSidebar = () => {
@@ -107,7 +108,7 @@ export const AdminEventDash = (props: userProps) => {
                         <div className="col-lg-8 col-lg-offset-2">
                             <Usernav username={props.userid} />
                             
-                              <AdminEvent/>
+                              <AdminVendor/>
                                 
                                 
                             

@@ -24,7 +24,7 @@ const SignUpForm: React.FC = () => {
     name: '',
     phone: '',
     address: '',
-    role: '',
+    role: 'employee',
   });
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -152,7 +152,7 @@ const SignUpForm: React.FC = () => {
               onChange={handleChange}
               required
             />
-            <FormControl fullWidth margin="normal">
+            {/* <FormControl fullWidth margin="normal">
               <InputLabel id="role-select-label">Role</InputLabel>
               <Select
                 labelId="role-select-label"
@@ -167,7 +167,7 @@ const SignUpForm: React.FC = () => {
                 <MenuItem value="manager">Manager</MenuItem>
                 <MenuItem value="security">Security</MenuItem>
               </Select>
-            </FormControl>
+            </FormControl> */}
             <Button
               type="submit"
               fullWidth

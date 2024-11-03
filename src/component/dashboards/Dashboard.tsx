@@ -8,11 +8,12 @@ import event from '../resources/event.png';
 import feedback from '../resources/feedback.png';
 import stall from '../resources/stall.png';
 import EventDetailcard from '../admin/Eventdetailscard/Eventdetailcard';
-import workspace from '../resources/workspace.png';
+import workspaceimg from '../resources/workspace.png';
 import { Link } from 'react-router-dom';
 import ParkingCard from '../DashboardCards/ParkingCard';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
+import WorkspaceCard from '../DashboardCards/WorkspaceCard';
 
 type Props = {};
 
@@ -34,6 +35,17 @@ type parkingdetailscard = {
     direction: string;
     parkingtype: string;
 };
+
+type worspacetype={
+    _id: string;
+    userId: string,
+    name: string
+    contact: string
+    startTime: string
+    workspace_id:string,
+    project:string
+
+}
 
 export const Dashboard = (props: Props) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -62,6 +74,7 @@ export const Dashboard = (props: Props) => {
                     <li><Link to="/events"><div>Events</div></Link></li>
                     <li><Link to="/vendor"><div>Vendorstall</div></Link></li>
                     <li><Link to="/feedback"><div>Feedback</div></Link></li>
+                    <li><Link to="/logout"><div>Logout</div></Link></li>
                 </ul>
             </nav>
 
@@ -79,7 +92,7 @@ export const Dashboard = (props: Props) => {
                             <div className="dashboardtotalnumbers">
                                 <Countcard color="#D8F1FF" imgscr={empimg} totalno={2134} totalnumberof="Total no of Employees" />
                                 <Countcard color="#E6CEF8" imgscr={parkingimg} totalno={2120} totalnumberof="Total no of Parking slot" />
-                                <Countcard color="#D5E2F1" imgscr={workspace} totalno={4005} totalnumberof="Total no of Workspace" />
+                                <Countcard color="#D5E2F1" imgscr={workspaceimg} totalno={4005} totalnumberof="Total no of Workspace" />
                                 <Countcard color="#D5F7D6" imgscr={event} totalno={1241} totalnumberof="Total no of Event Venue" />
                                 <Countcard color="#FBE6D2" imgscr={stall} totalno={7} totalnumberof="Total no of Vendor Stall" />
                             </div>
@@ -103,6 +116,7 @@ export const UserDashboard = (props: userProps) => {
     const [userid, setUserid] = useState<string | null>(null);
     const [contactNumber, setContactNumber] = useState('');
     const [parkdetails, setParkDetails] = useState<parkingdetailscard[]>([]);
+    const [workspacedetails, setWorkspacedetails] = useState<worspacetype[]>([]);
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
@@ -144,15 +158,46 @@ export const UserDashboard = (props: userProps) => {
                 console.error('Error fetching parking details:', error);
             }
         };
+        const fetchworkDetails = async () => {
+            if (!userid) return;
+            try {
+                const workdata = await axios.get(`http://localhost:3005/api/v1/bookings/user/${userid}`);
+                const workdataArray = workdata.data.map((data: any) => ({
+                    _id: data._id,
+                    userId: data.userId,
+                    name: data.name,
+                    contact: data.contact,
+                    startTime: data.startTime,
+                    project:data.project,
+                    workspace_id:data.workspace_id
+
+                }));
+                setWorkspacedetails(workdataArray);
+                console.log(workdataArray)
+
+            } catch (error) {
+                console.error('Error fetching working details:', error);
+            }
+        };
 
         fetchRole();
         fetchParkingDetails();
+        fetchworkDetails()
     }, [userid]);
 
     const handleCancel = async (_id: string) => {
         try {
             await axios.delete(`http://localhost:3000/api/v1/parking/slot/${_id}`);
             setParkDetails(prevDetails => prevDetails.filter(parking => parking._id !== _id));
+        } catch (error) {
+            console.error('Error canceling parking slot:', error);
+        }
+    };
+
+    const workspacehandleCancel = async (_id: string) => {
+        try {
+            await axios.delete(`http://localhost:3005/api/v1/workspaces/${_id}/bookings/${userid}`);
+            setWorkspacedetails(prevDetails => prevDetails.filter(parking => parking.workspace_id !== _id));
         } catch (error) {
             console.error('Error canceling parking slot:', error);
         }
@@ -205,6 +250,17 @@ export const UserDashboard = (props: userProps) => {
                                                 />
                                             ))}
                                         </div>
+                                    </div>
+                                    <div className="workspacecards">
+                                        {workspacedetails.map(workspace=>(
+                                             <WorkspaceCard
+                                                 color="#D8F1FF" heading="Workspace" imgsrc={workspaceimg}
+                                                 key={workspace.workspace_id}
+                                                 {...workspace}
+                                                 onCancel={workspacehandleCancel}
+                                             />
+     
+                                        ))}
                                     </div>
                                 </div>
                             </div>
