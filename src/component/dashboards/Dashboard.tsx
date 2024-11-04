@@ -15,6 +15,7 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import WorkspaceCard from '../DashboardCards/WorkspaceCard';
 import Vendorbookingsindashboad from '../vendor/vendorbookingsindashboad';
+import SecurityDashdetails from '../security/SecurityDashdetails';
 
 type Props = {};
 
@@ -175,12 +176,9 @@ export const Managerdashboard = (props: Props) => {
                         </div>
                     </div>
                     <li><Link to="/dashboard"><div>Dashboard</div></Link></li>
-                    <li><Link to="/employees"><div>Employees</div></Link></li>
                     <li><Link to="/parking"><div>Parking</div></Link></li>
                     <li><Link to="/workspace"><div>Workspace</div></Link></li>
-                    <li><Link to="/venue"><div>Venue</div></Link></li>
                     <li><Link to="/events"><div>Events</div></Link></li>
-                    <li><Link to="/vendor"><div>Vendorstall</div></Link></li>
                     <li><Link to="/feedback"><div>Feedback</div></Link></li>
                     <li><Link to="/logout"><div>Logout</div></Link></li>
                 </ul>
@@ -207,53 +205,16 @@ export const Managerdashboard = (props: Props) => {
 };
 
 export const Securitydashboard = (props: Props) => {
-    const [isOpen, setIsOpen] = useState(false);
-
-    const toggleSidebar = () => {
-        setIsOpen(!isOpen);
-    };
+    
 
     return (
-        <div id="wrapper" className={isOpen ? 'toggled' : ''}>
-            <div className="overlay" style={{ display: isOpen ? 'block' : 'none' }} onClick={toggleSidebar}></div>
-
-            {/* Sidebar */}
-            <nav className="navbar navbar-inverse fixed-top" id="sidebar-wrapper" role="navigation">
-                <ul className="sidebar-nav">
-                    <div className="sidebar-header">
-                        <div className="sidebar-brand">
-                            <a href="#">Brand</a>
-                        </div>
-                    </div>
-                    <li><Link to="/dashboard"><div>Dashboard</div></Link></li>
-                    <li><Link to="/employees"><div>Employees</div></Link></li>
-                    <li><Link to="/parking"><div>Parking</div></Link></li>
-                    <li><Link to="/workspace"><div>Workspace</div></Link></li>
-                    <li><Link to="/venue"><div>Venue</div></Link></li>
-                    <li><Link to="/events"><div>Events</div></Link></li>
-                    <li><Link to="/vendor"><div>Vendorstall</div></Link></li>
-                    <li><Link to="/feedback"><div>Feedback</div></Link></li>
-                    <li><Link to="/logout"><div>Logout</div></Link></li>
-                </ul>
-            </nav>
-
-            {/* Page Content */}
-            <div id="page-content-wrapper">
-                <button type="button" className={`hamburger ${isOpen ? 'is-open' : 'is-closed'}`} onClick={toggleSidebar}>
-                    <span className="hamb-top"></span>
-                    <span className="hamb-middle"></span>
-                    <span className="hamb-bottom"></span>
-                </button>
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-8 col-lg-offset-2">
-                            <Usernav username="admin" />
-                            security
-                        </div>
-                    </div>
-                </div>
+        <div>
+            <div className="nav">
+                <Link style={{color:'white',marginRight:"20px",textDecoration:"none"}} to='/logout'>logout</Link>
             </div>
+            <SecurityDashdetails/>
         </div>
+        
     );
 };
 

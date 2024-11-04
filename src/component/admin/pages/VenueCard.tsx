@@ -5,11 +5,12 @@ type VenueCardProps = {
   capacity: number;
   isAvailable: boolean;
   imgUrl: string;
+  onClick?: () => void;
 };
 
-const VenueCard: React.FC<VenueCardProps> = ({ venueName, capacity, isAvailable, imgUrl }) => {
+const VenueCard: React.FC<VenueCardProps> = ({ venueName, capacity, isAvailable, imgUrl ,onClick}) => {
   return (
-    <div className="venue-card">
+    <div className="venue-card" onClick={onClick}>
       <img src={imgUrl} alt={venueName} />
       <h4>{venueName}</h4>
       <p>Capacity: {capacity}</p>

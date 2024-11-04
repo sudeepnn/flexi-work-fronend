@@ -4,7 +4,7 @@ import { Dashboard } from '../dashboards/Dashboard';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
-import { AdminEventDash, UserEventDash } from '../dashboards/event_dash';
+import { AdminEventDash, MangerEventDash, UserEventDash } from '../dashboards/event_dash';
 
 type DecodedToken = {
     userId: string; 
@@ -53,8 +53,22 @@ const EventRegistrehandler = (props: Props) => {
       return <Navigate to="/login" />;
     }
   
+    switch (role) {
+      case 'admin':
+        return <AdminEventDash userid={"admin"} />;
+      case 'employee':
+        return <UserEventDash userid={user}   />;
+      case 'vendor':
+        return <div>No access</div>;
+      case 'manager':
+        return <MangerEventDash userid={user}/>;
+      case 'security':
+        return <div>No access</div>;
+      default:
+        return <div>No access</div>; // Handle unauthorized access or unknown roles
+    }
     // Render different dashboards based on the role
-    return role === 'admin' ? <AdminEventDash userid={"admin"} /> : <UserEventDash userid={user}   />;
+   
   };
 
 
