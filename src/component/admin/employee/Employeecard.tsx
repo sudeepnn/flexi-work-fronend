@@ -15,8 +15,10 @@ type EmployeecardProps = {
 const Employeecard = ({ profileImage, username, email, phone, address, project,manager }: EmployeecardProps) => {
   return (
     <div className="employeecard">
+      <div className="topnameimg">
       <img src={profileImage || userimg} alt="Profile" />
       <h3>{username}</h3>
+      </div>
       <p>Email: {email}</p>
       <p>Phone: {phone}</p>
       <p>Address: {address}</p>
