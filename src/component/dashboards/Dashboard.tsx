@@ -63,10 +63,38 @@ type eventDetailsType = {
 
 export const Dashboard = (props: Props) => {
     const [isOpen, setIsOpen] = useState(false);
-
+    const [totalpkcnt,setTotalpkcnt]=useState(0);
+    const [totalpkoccupied,setTotalpkoccupied]=useState(0);
+    const [totalwkcnt,setTotalwkcnt]=useState(0);
+    const [totalwkunoccupied,setTotalwkunoccupied]=useState(0);
+    const [totalvendorcnt,setTotalvendorcnt]=useState(0);
+    const [totalvendorunoccupied,setTotalvendorunoccupied]=useState(0);
+    const [totalEmp,setemployeecnt]=useState(0);
+    const [totalMan,setmanagercnt]=useState(0);
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
+
+    useEffect(()=>{
+            (async()=>{
+                try {
+                    const response = await axios.get('http://localhost:3001/api/v1/usersemp/counts');
+                    setemployeecnt(response.data.totalEmployees); 
+                    setmanagercnt(response.data.totalManagers); 
+                    const parkingresponse = await axios.get('http://localhost:3000/api/v1//parkingcntdetails');
+                    setTotalpkoccupied(parkingresponse.data.notAvailableCount);
+                    setTotalpkcnt(parkingresponse.data.totalSlots)
+                    const workspaceresponse = await axios.get('http://localhost:3005/api/v1/workspacescntdetails');
+                    setTotalwkunoccupied(workspaceresponse.data.availableCount);
+                    setTotalwkcnt(workspaceresponse.data.totalSlots)
+                    const vendorresponse = await axios.get('http://localhost:3008/api/v1/vendorspacecntdetails');
+                    setTotalvendorunoccupied(vendorresponse.data.availableCount);
+                    setTotalvendorcnt(vendorresponse.data.totalSlots)
+                } catch (error) {
+                    console.error('Error fetching employee count:', error);
+                }
+            })()
+    },[])
 
     return (
         <div id="wrapper" className={isOpen ? 'toggled' : ''}>
@@ -84,7 +112,7 @@ export const Dashboard = (props: Props) => {
                     <li><Link to="/employees"><div>Employees</div></Link></li>
                     <li><Link to="/parking"><div>Parking</div></Link></li>
                     <li><Link to="/workspace"><div>Workspace</div></Link></li>
-                    <li><Link to="/venue"><div>Venue</div></Link></li>
+                    
                     <li><Link to="/events"><div>Events</div></Link></li>
                     <li><Link to="/vendor"><div>Vendorstall</div></Link></li>
                     <li><Link to="/feedback"><div>Feedback</div></Link></li>
@@ -104,17 +132,17 @@ export const Dashboard = (props: Props) => {
                         <div className="col-lg-8 col-lg-offset-2">
                             <Usernav username="admin" />
                             <div className="dashboardtotalnumbers">
-                                <Countcard color="#D8F1FF" imgscr={empimg} totalno={2134} totalnumberof="Total no of Employees" />
-                                <Countcard color="#E6CEF8" imgscr={parkingimg} totalno={2120} totalnumberof="Total no of Parking slot" />
-                                <Countcard color="#D5E2F1" imgscr={workspaceimg} totalno={4005} totalnumberof="Total no of Workspace" />
+                                <Countcard color="#D8F1FF" imgscr={empimg} totalno={totalEmp+totalMan} totalnumberof="Total no of Employees" />
+                                <Countcard color="#E6CEF8" imgscr={parkingimg} totalno={totalpkcnt} totalnumberof="Total no of Parking slot" />
+                                <Countcard color="#D5E2F1" imgscr={workspaceimg} totalno={totalwkcnt} totalnumberof="Total no of Workspace" />
                                 <Countcard color="#D5F7D6" imgscr={event} totalno={1241} totalnumberof="Total no of Event Venue" />
-                                <Countcard color="#FBE6D2" imgscr={stall} totalno={7} totalnumberof="Total no of Vendor Stall" />
+                                <Countcard color="#FBE6D2" imgscr={stall} totalno={totalvendorcnt} totalnumberof="Total no of Vendor Stall" />
                             </div>
                             <div className="cardwithinfo">
-                                <EventDetailcard blockName="Parking" totalno={2120} occupied={1002} displyname="Parking" />
-                                <EventDetailcard blockName="Workspace" totalno={4005} occupied={3000} displyname="Workspace" />
+                                <EventDetailcard blockName="Parking" totalno={totalpkcnt} occupied={totalpkoccupied} displyname="Parking" />
+                                <EventDetailcard blockName="Workspace" totalno={totalwkcnt} occupied={totalwkcnt-totalwkunoccupied} displyname="Workspace" />
                                 <EventDetailcard blockName="Event Venue" totalno={43} occupied={12} displyname="Vendor Stall" />
-                                <EventDetailcard blockName="Vendor Stall" totalno={7} occupied={6} displyname="Vendor Stall" />
+                                <EventDetailcard blockName="Vendor Stall" totalno={totalvendorcnt} occupied={totalvendorcnt-totalvendorunoccupied} displyname="Vendor Stall" />
                             </div>
                         </div>
                     </div>
