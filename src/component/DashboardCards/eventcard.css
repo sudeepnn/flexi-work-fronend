@@ -1,0 +1,49 @@
+/* Main card container */
+.event-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+    margin: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    transition: transform 0.2s;
+}
+
+.event-card:hover {
+    transform: scale(1.05);
+}
+
+/* Image wrapper */
+.event-card-image-wrapper {
+    width: 100%;
+    overflow: hidden;
+}
+
+/* Image styling */
+.event-card-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Content section */
+.event-card-content {
+    padding: 16px;
+}
+
+/* Title styling */
+.event-card-title {
+    font-size: 1.25em;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+/* General text styling */
+.event-card-content p {
+    margin: 5px 0;
+    color: #555;
+    font-size: 0.95em;
+}

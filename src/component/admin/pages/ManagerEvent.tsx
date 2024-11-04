@@ -6,6 +6,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
+import {jwtDecode} from 'jwt-decode';
+import axios from 'axios';
 
 type Venue = {
   _id: string;
@@ -13,6 +15,13 @@ type Venue = {
   capacity: number;
   isAvailable: boolean;
   imgurl: string;
+};
+
+type DecodedToken = {
+  userId: string;
+  role: string;
+  iat: number;
+  exp: number;
 };
 
 const ManagerEvent = () => {
@@ -24,6 +33,16 @@ const ManagerEvent = () => {
     endDate: '',
     venueId: ''
   });
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // Fetch the userId from the token and set it
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded: DecodedToken = jwtDecode(token);
+      setUserId(decoded.userId); // Set userId directly from the token
+    }
+  }, []);
 
   useEffect(() => {
     const fetchVenues = async () => {
@@ -52,9 +71,38 @@ const ManagerEvent = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    console.log('Event details submitted:', eventDetails);
-    setIsDialogOpen(false);
+  const handleSubmit = async () => {
+    try {
+      if (!userId) {
+        console.error('User ID not available');
+        return;
+      }
+
+      // Submit event details, including userId
+      const response = await fetch('http://localhost:3003/api/v1/event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          event_name: eventDetails.eventName,
+          organizer_id: userId,
+          venue_id: eventDetails.venueId,
+          start_time: eventDetails.startDate,
+          end_time: eventDetails.endDate,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create event');
+      }
+
+      console.log('Event created successfully');
+      console.log(response)
+      setIsDialogOpen(false);
+    } catch (error) {
+      console.error('Failed to create event:', error);
+    }
   };
 
   const availableVenues = venues.filter(venue => venue.isAvailable);
@@ -67,13 +115,13 @@ const ManagerEvent = () => {
       <h4>Available Venues:</h4>
       <div className="allvenue">
         {availableVenues.map((venue: Venue) => (
-          <VenueCard 
-            key={venue._id} 
-            venueName={venue.venue_name} 
-            capacity={venue.capacity} 
-            isAvailable={venue.isAvailable} 
-            imgUrl={venue.imgurl} 
-            onClick={() => openDialog(venue._id)} 
+          <VenueCard
+            key={venue._id}
+            venueName={venue.venue_name}
+            capacity={venue.capacity}
+            isAvailable={venue.isAvailable}
+            imgUrl={venue.imgurl}
+            onClick={() => openDialog(venue._id)}
           />
         ))}
       </div>
@@ -81,12 +129,12 @@ const ManagerEvent = () => {
       <h4>Not Available Venues:</h4>
       <div className="allvenue">
         {notAvailableVenues.map((venue: Venue) => (
-          <VenueCard 
-            key={venue._id} 
-            venueName={venue.venue_name} 
-            capacity={venue.capacity} 
-            isAvailable={venue.isAvailable} 
-            imgUrl={venue.imgurl} 
+          <VenueCard
+            key={venue._id}
+            venueName={venue.venue_name}
+            capacity={venue.capacity}
+            isAvailable={venue.isAvailable}
+            imgUrl={venue.imgurl}
           />
         ))}
       </div>

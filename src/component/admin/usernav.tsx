@@ -159,7 +159,7 @@ const UserNav = (props: Props) => {
           </div>
 
           <TextField
-            label="Username"
+            label="name"
             value={props.username || ''}
             disabled
             fullWidth
@@ -229,9 +229,9 @@ const UserNav = (props: Props) => {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleUpdate} color="primary">
+          {/* <Button onClick={handleUpdate} color="primary">
             Update
-          </Button>
+          </Button> */}
         </DialogActions>
       </Dialog>
     </div>

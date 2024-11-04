@@ -16,6 +16,7 @@ import { jwtDecode } from 'jwt-decode';
 import WorkspaceCard from '../DashboardCards/WorkspaceCard';
 import Vendorbookingsindashboad from '../vendor/vendorbookingsindashboad';
 import SecurityDashdetails from '../security/SecurityDashdetails';
+import EventCard from '../DashboardCards/EventCard';
 
 type Props = {};
 
@@ -48,6 +49,17 @@ type worspacetype={
     project:string
 
 }
+
+type eventDetailsType = {
+    _id: string;         // Unique identifier for the event
+    event_name: string;  // Name of the event
+    organizer_id: string; // ID of the organizer
+    venue_id: string;    // ID of the venue
+    start_time: string;  // Start time of the event (can be a date string)
+    end_time: string;  
+    imgurl: string;
+    venue_name: string;  // End time of the event (can be a date string)
+};
 
 export const Dashboard = (props: Props) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -156,12 +168,64 @@ export const Vendordashboard = (props: Props) => {
         </div>
     );
 };
-export const Managerdashboard = (props: Props) => {
+
+
+export const Managerdashboard: React.FC<Props> = (props) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [user, setUser] = useState<string | null>(null);
+    const [userid, setUserid] = useState<string | null>(null);
+    const [contactNumber, setContactNumber] = useState('');
+    const [eventDetails, setEventDetails] = useState<eventDetailsType[]>([]);
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
+
+    useEffect(() => {
+        const fetchRole = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const decoded: DecodedToken = jwtDecode(token);
+                const userId = decoded.userId;
+
+                const userResponse = await axios.get(`http://localhost:3001/api/v1/users/${userId}`);
+                setUser(userResponse.data.name);
+                setContactNumber(userResponse.data.phone);
+                setUserid(userId);
+                console.log(userId);
+            } catch (error) {
+                console.error('Error fetching user role:', error);
+            }
+        };
+
+        const fetchEventDetails = async () => {
+            if (!userid) return; // Check if user_id is provided
+            try {
+                const eventResponse = await axios.get(`http://localhost:3003/api/v1/venue/${userid}`);
+                console.log(eventResponse)
+                const eventDetailsArray = eventResponse.data.flatMap((venue: any) => 
+                    venue.event.map((event: any) => ({
+                        _id: event._id,
+                        event_name: event.event_name,
+                        organizer_id: event.organizer_id, // This corresponds to the user_id
+                        venue_id: event.venue_id,
+                        start_time: event.start_time,
+                        end_time: event.end_time,
+                        imgurl: venue.imgurl, // Include venue image URL
+                        venue_name: venue.venue_name // Include venue name
+                    }))
+                );
+                setEventDetails(eventDetailsArray);
+        console.log("Event Details Array:", eventDetailsArray);
+            } catch (error) {
+                console.error('Error fetching event details:', error);
+            }
+        };
+
+        fetchRole();
+        fetchEventDetails();
+    }, [userid]);
 
     return (
         <div id="wrapper" className={isOpen ? 'toggled' : ''}>
@@ -194,8 +258,15 @@ export const Managerdashboard = (props: Props) => {
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-8 col-lg-offset-2">
-                            <Usernav username="admin" />
-                            manager
+                        <Usernav username={user} />
+                            <h2>Event Details</h2>
+                            {eventDetails.length === 0 ? (
+                                <p>No events found for this user.</p>
+                            ) : (
+                                eventDetails.map(event => (
+                                    <EventCard key={event._id} event={event} /> // Render EventCard for each event
+                                ))
+                            )}
                         </div>
                     </div>
                 </div>
