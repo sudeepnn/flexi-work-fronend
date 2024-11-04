@@ -5,41 +5,69 @@ import Employeecard from './Employeecard';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+type employeeResponse = {
+  isOndcMember: boolean;
+  project: string | null;
+  manager: string | null;
+  _id: string;
+  user_id: string;
+  password: string;
+  email: string;
+  name: string;
+  phone: number;
+  address: string;
+  role: string;
+  __v: number;
+  profileImage: string;
+};
 
-type userResponse = {
-    isOndcMember: boolean;
-    project: string | null;
-    manager: string | null;
-    _id: string;
-    user_id: string;
-    password: string;
-    email: string;
-    name: string;
-    phone: number;
-    address: string;
-    role: string;
-    __v: number;
-    profileImage: string;
-  };
-//   type UsersResponse = User[];
 type Props = {};
 
 const AdminEmployee = (props: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [users, setUsers] = useState<userResponse[]>([]);
+  const [employees, setEmployees] = useState<employeeResponse[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
 
+  const loadEmployees = async () => {
+    if (loading || (totalPages && page > totalPages)) return;
+    setLoading(true);
+
+    try {
+      const response = await axios.get(`http://localhost:3001/api/v1/usersemp`, {
+        params: { page, limit: 10 }
+      });
+
+      const { data, totalPages } = response.data;
+      setEmployees(prevEmployees => [...prevEmployees, ...data]);
+      setTotalPages(totalPages);
+      setPage(prevPage => prevPage + 1);
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    // Fetch user data from the API
-    axios.get('http://localhost:3001/api/v1/usersemp/')
-      .then(response => setUsers(response.data))
-      
-      .catch(error => console.error('Error fetching users:', error));
-      console.log(users)
+    loadEmployees();
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerHeight + document.documentElement.scrollTop === document.documentElement.offsetHeight) {
+        loadEmployees();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [page, totalPages, loading]);
 
   return (
     <div id="wrapper" className={isOpen ? 'toggled' : ''}>
@@ -53,14 +81,14 @@ const AdminEmployee = (props: Props) => {
               <a href="#">Brand</a>
             </div>
           </div>
-          <li><Link  to="/dashboard"><div >Dashboard</div></Link></li>
-                    <li><Link  to="/employees"><div >Employees</div></Link></li>
-                    <li><Link  to="/parking"><div >Parking</div></Link></li>
-                    <li><Link  to="/workspace"><div >Workspace</div></Link></li>
-                    <li><Link  to="/venue"><div >Venue</div></Link></li>
-                    <li><Link  to="/events"><div >Events</div></Link></li>
-                    <li><Link  to="/vendor"><div >Vendorstall</div></Link></li>
-                    <li><Link  to="/feedback"><div >Feedback</div></Link></li>
+          <li><Link to="/dashboard"><div>Dashboard</div></Link></li>
+          <li><Link to="/employees"><div>Employees</div></Link></li>
+          <li><Link to="/parking"><div>Parking</div></Link></li>
+          <li><Link to="/workspace"><div>Workspace</div></Link></li>
+          <li><Link to="/venue"><div>Venue</div></Link></li>
+          <li><Link to="/events"><div>Events</div></Link></li>
+          <li><Link to="/vendor"><div>Vendorstall</div></Link></li>
+          <li><Link to="/feedback"><div>Feedback</div></Link></li>
         </ul>
       </nav>
 
@@ -76,20 +104,22 @@ const AdminEmployee = (props: Props) => {
             <div className="col-lg-8 col-lg-offset-2">
               <Usernav username="admin" />
               <div className="row">
-              <div className="employee-grid">
-  {users.map(user => (
-    <Employeecard
-      key={user._id}
-      profileImage={user.profileImage}
-      username={user.name}
-      email={user.email}
-      phone={user.phone}
-      address={user.address}
-      project={user.project}
-      manager={user.manager}
-    />
-  ))}
-</div>
+                <div className="employee-grid">
+                  {employees.map(employee => (
+                    <Employeecard
+                      key={employee._id}
+                      profileImage={employee.profileImage}
+                      username={employee.name}
+                      email={employee.email}
+                      phone={employee.phone}
+                      address={employee.address}
+                      project={employee.project}
+                      manager={employee.manager}
+                    />
+                  ))}
+                </div>
+                {loading && <div>Loading...</div>}
+                {page > totalPages && <div>No more employees to load.</div>}
               </div>
             </div>
           </div>
