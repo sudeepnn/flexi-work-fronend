@@ -329,6 +329,7 @@ export const UserDashboard = (props: userProps) => {
                     <li><Link to="/parking"><div>Parking</div></Link></li>
                     <li><Link to="/events"><div>Events</div></Link></li>
                     <li><Link to="/feedback"><div>Feedback</div></Link></li>
+                    <li><Link to="/logout"><div>Logout</div></Link></li>
                 </ul>
             </nav>
 
