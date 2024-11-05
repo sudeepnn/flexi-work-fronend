@@ -12,8 +12,8 @@ const nav = (props: navprop) => {
   return (
     <div className="nav">
         <div className="navleft">
-          <Link className='link' to={props.link1}> <div className='aboutbtn' >{props.option1}</div>
-          </Link>
+          {/* <Link className='link' to={props.link1}> <div className='aboutbtn' >{props.option1}</div> */}
+          {/* </Link> */}
             <Link className='link' to={props.link2}><div className='signupbtn'>{props.option2}</div></Link>
             
         </div>

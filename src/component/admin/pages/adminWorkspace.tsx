@@ -97,7 +97,7 @@ const AdminWorkspace = () => {
     <Box p={3}>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h5">Workspace Bookings</Typography>
-        <Button
+        {/* <Button
           variant="contained"
           color="primary"
           startIcon={<AddIcon />}
@@ -105,7 +105,7 @@ const AdminWorkspace = () => {
           sx={{ backgroundColor: '#016375', borderRadius: '15px' }}
         >
           Add Workspace
-        </Button>
+        </Button> */}
       </Box>
 
       {/* Display workspaces grouped by project */}
@@ -115,28 +115,63 @@ const AdminWorkspace = () => {
             {project}
           </Typography>
           <Box display="flex" flexWrap="wrap" gap={2}>
-            {groupedWorkspaces[project].map((workspace) => (
-              <Button
-                key={workspace.workspace_id}
-                onClick={() =>  !workspace.availability && fetchWorkspaceDetails(workspace.workspace_id)}
-                sx={{
-                  width: 100,
-                  height: 100,
-                  backgroundColor: workspace.availability ? 'green' : 'red',
-                  color: 'white',
-                  borderRadius: '8px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '14px',
-                  '&:hover': {
-                    backgroundColor: workspace.availability ? '#006400' : '#8B0000',
-                  },
-                }}
-              >
-                {workspace.workspace_id}
-              </Button>
-            ))}
+          <div
+  style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(10, 1fr)', // 7 workspaces per row
+    gap: '10px',
+    justifyContent: 'center',
+  }}
+>
+  {groupedWorkspaces[project].map((workspace) => (
+    <div
+      key={workspace.workspace_id}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        border: '1px solid #ccc',
+        borderRadius: '8px',
+        padding: '10px',
+        backgroundColor: workspace.availability ? '#e6f7e6' : '#f7e6e6',
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={!workspace.availability}
+        disabled
+        style={{
+          marginBottom: '8px',
+          transform: 'scale(1.2)',
+        }}
+      />
+      <label style={{ fontWeight: 'bold', marginBottom: '8px' }}>
+        {workspace.workspace_id}
+      </label>
+      <Button
+        onClick={() => !workspace.availability && fetchWorkspaceDetails(workspace.workspace_id)}
+        sx={{
+          width: '80px',
+          height: '35px',
+          backgroundColor: workspace.availability ? 'green' : 'red',
+          color: 'white',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '14px',
+          '&:hover': {
+            backgroundColor: workspace.availability ? '#006400' : '#8B0000',
+          },
+        }}
+        disabled={workspace.availability} // Disable button if workspace is available
+      >
+        Book
+      </Button>
+    </div>
+  ))}
+</div>
+
           </Box>
         </Box>
       ))}
