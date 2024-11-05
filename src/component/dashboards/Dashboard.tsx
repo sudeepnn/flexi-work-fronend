@@ -19,6 +19,7 @@ import SecurityDashdetails from '../security/SecurityDashdetails';
 import EventCard from '../DashboardCards/EventCard';
 import NoBookingCard from '../DashboardCards/NoBookingCard';
 import logo from '../resources/logo.png'
+import Eventdetaildashcard from '../DashboardCards/eventdetaildashCard';
 
 type Props = {};
 
@@ -454,6 +455,7 @@ export const Securitydashboard = (props: Props) => {
 };
 
 type eventtype={
+    _id:string
     event_name: string,
         user_id: string,
 }
@@ -529,12 +531,27 @@ export const UserDashboard = (props: userProps) => {
             }
         };
         const fetchevnetdetails=async ()=>{
+            try {
+                const evnetdata = await axios.get(`http://localhost:3003/api/v1/event/registered/${userid}`);
+                const eventdataArray = evnetdata.data.map((data: any) => ({
+                    _id: data._id,
+                    user_id: data.user_id,
+                    event_name: data.event_name,
+                   
 
+                }));
+                setEventdetails(eventdataArray);
+                console.log(eventdataArray)
+
+            } catch (error) {
+                console.error('Error fetching working details:', error);
+            }
         }
 
         fetchRole();
         fetchParkingDetails();
         fetchworkDetails()
+        fetchevnetdetails()
     }, [userid]);
 
     const handleCancel = async (_id: string) => {
@@ -631,8 +648,20 @@ export const UserDashboard = (props: userProps) => {
                                 </div>
                                 <div className="dashboardtotalnumbers">
                                 <div className='parking-card-container'>
-                                <NoBookingCard color='#D5F7D6' heading="No Event Yet"
-                                            imgsrc={eventimg} />
+                                    <div className="eventcard">
+                                    {eventdetails.length > 0 ? (eventdetails.map(evnt => (
+                                            <Eventdetaildashcard
+                                                color="#D5F7D6" heading="Event" imgsrc={eventimg}
+                                                key={evnt._id}
+                                                {...evnt}
+                                                onCancel={workspacehandleCancel}
+                                            />
+
+                                        ))) : (<NoBookingCard color='#D5F7D6' heading="No Event Yet"
+                                            imgsrc={eventimg} />)}
+
+                                    </div>
+                                
                                 </div>
                                             <NoBookingCard color='#D8F1FF' heading="No Feedback Yet"
                                             imgsrc={feedbackimg} />
