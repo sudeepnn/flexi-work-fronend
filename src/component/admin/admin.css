@@ -100,7 +100,7 @@ body{
 
 .completeblock{
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   margin-top: 50px;
 
 
