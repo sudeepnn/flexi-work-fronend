@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import VendorCard from './VendorCard';
 import './vendorcard.css';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 import { Dialog, DialogTitle, DialogActions, Button, Snackbar } from '@mui/material';
 
@@ -19,6 +19,7 @@ type DecodedToken = {
   role: string;   
 };
 
+type AlertSeverity = 'success' | 'error' | 'warning' | 'info';
 
 const VendorUser: React.FC = () => {
   const [vendors, setVendors] = useState<Vendor[]>([]);
@@ -29,6 +30,7 @@ const VendorUser: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [errororsuccess, setErrororsuccess] = useState<AlertSeverity>('success');
 
   useEffect(() => {
     const fetchRole = async () => {
@@ -71,9 +73,32 @@ const VendorUser: React.FC = () => {
     setDialogOpen(true);
   };
 
+  const checkUserBooking = async (): Promise<boolean> => {
+    if (!userId) return false;
+
+    try {
+      const bookingResponse = await axios.get(`http://localhost:3008/api/v1/vendor-spaces/user/${userId}`);
+      return bookingResponse.data.length >= 1;
+    } catch (error) {
+      console.error("Error checking user bookings:", error);
+      return false;
+    }
+  };
+
   const handleConfirmBooking = async () => {
     if (!selectedVendor || !userId) return;
 
+    // Check if the user has already booked a vendor space
+    const hasBooking = await checkUserBooking();
+
+    if (hasBooking) {
+      setSnackbarMessage('You have already booked a vendor space. Please cancel your current booking to book a new one.');
+      setErrororsuccess("warning"); // Set alert severity to warning
+      setSnackbarOpen(true);
+      return;
+    }
+
+    // Proceed to book the vendor space
     try {
       const response = await axios.post(`http://localhost:3008/api/v1/vendor-space/book/${selectedVendor._id}`, {
         userid: userId,
@@ -83,10 +108,11 @@ const VendorUser: React.FC = () => {
       });
 
       setSnackbarMessage(response.data.message);
+      setErrororsuccess("success"); // Set alert severity to success
       setSnackbarOpen(true);
       setDialogOpen(false);
 
-      // Refresh vendor data or update availability of the selected vendor
+      // Update vendor availability
       setVendors((prevVendors) =>
         prevVendors.map((vendor) =>
           vendor._id === selectedVendor._id ? { ...vendor, avalablestatus: false } : vendor
@@ -94,6 +120,9 @@ const VendorUser: React.FC = () => {
       );
     } catch (error) {
       console.error("Error booking vendor space:", error);
+      setSnackbarMessage('An error occurred while booking. Please try again.');
+      setErrororsuccess("error"); // Set alert severity to error
+      setSnackbarOpen(true);
     }
   };
 
