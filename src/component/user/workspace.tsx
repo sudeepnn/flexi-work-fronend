@@ -20,6 +20,8 @@ type DecodedToken = {
   role: string;
 };
 
+type AlertSeverity = 'success' | 'error' | 'warning' | 'info';
+
 interface Workspace {
   _id: string;
   workspace_id: string;
@@ -36,8 +38,8 @@ const Workspace = (props: Props) => {
   const [selectedWorkspace, setSelectedWorkspace] = useState<Workspace | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  const [hasBookedWorkspace, setHasBookedWorkspace] = useState(false); // Track booking status
-  const [snackbarMessage, setSnackbarMessage] = useState(''); // Message for Snackbar
+  const [errorMessage, setErrorMessage] = useState(''); 
+  const [errororsuccess, setErrororsuccess] = useState<AlertSeverity>('success'); 
 
   // Fetch user data from token
   useEffect(() => {
@@ -60,12 +62,8 @@ const Workspace = (props: Props) => {
     fetchUserFromToken();
   }, []);
 
-  // Fetch workspaces and booking status when project changes
   useEffect(() => {
-    if (project) {
-      fetchWorkspacesByProject();
-      checkUserBookingStatus(); // Check if the user already booked a workspace
-    }
+    if (project) fetchWorkspacesByProject();
   }, [project]);
 
   const fetchWorkspacesByProject = async () => {
@@ -77,26 +75,25 @@ const Workspace = (props: Props) => {
     }
   };
 
-  // Check if user has already booked a workspace
-  const checkUserBookingStatus = async () => {
-    try {
-      const response = await axios.get(`http://localhost:3005/api/v1/bookings/user/${userId}`);
-      setHasBookedWorkspace(response.data.hasBooking);
-      console.log(response.data.ha) // Adjust based on your API response
-    } catch (error) {
-      console.error('Error checking booking status:', error);
-    }
-  };
-
-  const handleWorkspaceClick = (workspace: Workspace) => {
-    if (hasBookedWorkspace) {
-      setSnackbarMessage('You have already booked a workspace!');
-      setSnackbarOpen(true);
-      return;
-    }
+  const handleWorkspaceClick = async (workspace: Workspace) => {
     if (workspace.availability) {
-      setSelectedWorkspace(workspace);
-      setOpenDialog(true);
+      try {
+        const bookingResponse = await axios.get(`http://localhost:3005/api/v1/bookings/user/${userId}`);
+        
+        if (bookingResponse.data.length >= 1) {
+          setErrorMessage('You have already booked a workspace. Please cancel your current booking to book a new one.');
+          setErrororsuccess("warning"); // This now matches the Alert severity types
+          setSnackbarOpen(true); 
+          return; 
+        }
+        
+        setSelectedWorkspace(workspace);
+        setErrorMessage("Workspace booked successfully!");
+        setErrororsuccess("success"); // This now matches the Alert severity types
+        setOpenDialog(true);
+      } catch (error) {
+        console.error('Error fetching user bookings:', error);
+      }
     }
   };
 
@@ -111,27 +108,13 @@ const Workspace = (props: Props) => {
 
       try {
         await axios.put(`http://localhost:3005/api/v1/workspace/myworkspace/${selectedWorkspace._id}`, bookingData);
-        setSnackbarMessage('Workspace booked successfully!');
         setSnackbarOpen(true);
-        setHasBookedWorkspace(true); // Mark user as having a booking
         fetchWorkspacesByProject(); // Refresh workspace data after booking
       } catch (error) {
         console.error('Error booking workspace:', error);
       }
     }
     setOpenDialog(false);
-  };
-
-  const handleCancelBooking = async () => {
-    try {
-      await axios.delete(`http://localhost:3005/api/v1/bookings/user/${userId}`);
-      setHasBookedWorkspace(false); // Allow booking again after cancellation
-      setSnackbarMessage('Your booking has been canceled.');
-      setSnackbarOpen(true);
-      fetchWorkspacesByProject();
-    } catch (error) {
-      console.error('Error canceling booking:', error);
-    }
   };
 
   return (
@@ -185,16 +168,10 @@ const Workspace = (props: Props) => {
         autoHideDuration={3000}
         onClose={() => setSnackbarOpen(false)}
       >
-        <Alert onClose={() => setSnackbarOpen(false)} severity={hasBookedWorkspace ? "warning" : "success"}>
-          {snackbarMessage}
+        <Alert onClose={() => setSnackbarOpen(false)} severity={errororsuccess}>
+          {errorMessage}
         </Alert>
       </Snackbar>
-
-      {hasBookedWorkspace && (
-        <Button variant="contained" color="secondary" onClick={handleCancelBooking}>
-          Cancel Booking
-        </Button>
-      )}
     </div>
   );
 };
