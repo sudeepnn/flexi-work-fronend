@@ -20,7 +20,7 @@ import EventCard from '../DashboardCards/EventCard';
 import NoBookingCard from '../DashboardCards/NoBookingCard';
 import logo from '../resources/logo.png'
 import Eventdetaildashcard from '../DashboardCards/eventdetaildashCard';
-
+import CustomPieChart from '../charts/CustomPieChart'
 type Props = {};
 
 type userProps = {
@@ -147,6 +147,7 @@ export const Dashboard = (props: Props) => {
                                 <EventDetailcard blockName="Event Venue" totalno={43} occupied={12} displyname="Vendor Stall" />
                                 <EventDetailcard blockName="Vendor Stall" totalno={totalvendorcnt} occupied={totalvendorcnt - totalvendorunoccupied} displyname="Vendor Stall" />
                             </div>
+                            
                         </div>
                     </div>
                 </div>

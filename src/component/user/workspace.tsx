@@ -123,28 +123,63 @@ const Workspace = (props: Props) => {
       <h3>{project}</h3>
       <div className="workspaceslots">
         <Box display="flex" flexWrap="wrap" gap={2}>
-          {workspaces.map((workspace) => (
-            <Button
-              key={workspace._id}
-              onClick={() => handleWorkspaceClick(workspace)}
-              sx={{
-                width: 100,
-                height: 100,
-                backgroundColor: workspace.availability ? 'green' : 'red',
-                color: 'white',
-                borderRadius: '8px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '14px',
-                '&:hover': {
-                  backgroundColor: workspace.availability ? '#006400' : '#8B0000',
-                },
-              }}
-            >
-              {workspace.workspace_id}
-            </Button>
-          ))}
+        <div
+  style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(9, 1fr)', // 7 workspaces per row
+    gap: '10px',
+    justifyContent: 'center',
+  }}
+>
+  {workspaces.map((workspace) => (
+    <div
+      key={workspace._id}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        border: '1px solid #ccc',
+        borderRadius: '8px',
+        padding: '10px',
+        backgroundColor: workspace.availability ? '#e6f7e6' : '#f7e6e6',
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={!workspace.availability}
+        disabled
+        style={{
+          marginBottom: '8px',
+          transform: 'scale(1.2)',
+        }}
+      />
+      <label style={{ fontWeight: 'bold', marginBottom: '8px' }}>
+        {workspace.workspace_id}
+      </label>
+      <Button
+        onClick={() => handleWorkspaceClick(workspace)}
+        sx={{
+          width: '80px',
+          height: '35px',
+          backgroundColor: workspace.availability ? 'green' : 'red',
+          color: 'white',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '14px',
+          '&:hover': {
+            backgroundColor: workspace.availability ? '#006400' : '#8B0000',
+          },
+        }}
+        disabled={!workspace.availability} // Disable if not available
+      >
+        Book
+      </Button>
+    </div>
+  ))}
+</div>
+
         </Box>
       </div>
 
