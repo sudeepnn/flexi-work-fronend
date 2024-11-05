@@ -156,6 +156,27 @@ export const Dashboard = (props: Props) => {
 
 export const Vendordashboard = (props: Props) => {
     const [isOpen, setIsOpen] = useState(false);
+    const [user, setUser] = useState<string | null>(null);
+    const [userid, setUserid] = useState<string | null>(null);
+    useEffect(() => {
+        const fetchRole = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) return;
+            try {
+                const decoded: DecodedToken = jwtDecode(token);
+                const userId = decoded.userId;
+
+                const userResponse = await axios.get(`http://localhost:3001/api/v1/users/${userId}`);
+                setUser(userResponse.data.name);
+                
+                setUserid(userId);
+                console.log(userId);
+            } catch (error) {
+                console.error('Error fetching user role:', error);
+            }
+        };
+        fetchRole();
+    },[])
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
@@ -170,7 +191,7 @@ export const Vendordashboard = (props: Props) => {
                 <ul className="sidebar-nav">
                     <div className="sidebar-header">
                         <div className="sidebar-brand">
-                            <a href="#">Brand</a>
+                        <img src={logo} alt="" />
                         </div>
                     </div>
                     <li><Link to="/dashboard"><div>Dashboard</div></Link></li>
@@ -189,7 +210,7 @@ export const Vendordashboard = (props: Props) => {
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-8 col-lg-offset-2">
-                            <Usernav username="admin" />
+                            <Usernav username={user} />
                             <Vendorbookingsindashboad />
                         </div>
                     </div>
@@ -206,6 +227,9 @@ export const Managerdashboard: React.FC<Props> = (props) => {
     const [userid, setUserid] = useState<string | null>(null);
     const [contactNumber, setContactNumber] = useState('');
     const [eventDetails, setEventDetails] = useState<eventDetailsType[]>([]);
+    const [parkdetails, setParkDetails] = useState<parkingdetailscard[]>([]);
+    const [workspacedetails, setWorkspacedetails] = useState<worspacetype[]>([]);
+
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
@@ -252,10 +276,69 @@ export const Managerdashboard: React.FC<Props> = (props) => {
                 console.error('Error fetching event details:', error);
             }
         };
+        const fetchParkingDetails = async () => {
+            if (!userid) return;
+            try {
+                const parkingData = await axios.get(`http://localhost:3000/api/v1/parking/${userid}`);
+                const parkingDetailsArray = parkingData.data.map((data: any) => ({
+                    _id: data._id,
+                    area: data.area,
+                    block: data.block,
+                    slot_number: data.slot_number,
+                    floor: data.floor,
+                    direction: data.direction,
+                    parkingtype: data.parkingtype,
+                }));
+                setParkDetails(parkingDetailsArray);
+
+            } catch (error) {
+                console.error('Error fetching parking details:', error);
+            }
+        };
+        const fetchworkDetails = async () => {
+            if (!userid) return;
+            try {
+                const workdata = await axios.get(`http://localhost:3005/api/v1/bookings/user/${userid}`);
+                const workdataArray = workdata.data.map((data: any) => ({
+                    _id: data._id,
+                    userId: data.userId,
+                    name: data.name,
+                    contact: data.contact,
+                    startTime: data.startTime,
+                    project: data.project,
+                    workspace_id: data.workspace_id
+
+                }));
+                setWorkspacedetails(workdataArray);
+                console.log(workdataArray)
+
+            } catch (error) {
+                console.error('Error fetching working details:', error);
+            }
+        };
 
         fetchRole();
         fetchEventDetails();
+        fetchParkingDetails();
+        fetchworkDetails()
     }, [userid]);
+    const handleCancel = async (_id: string) => {
+        try {
+            await axios.delete(`http://localhost:3000/api/v1/parking/slot/${_id}`);
+            setParkDetails(prevDetails => prevDetails.filter(parking => parking._id !== _id));
+        } catch (error) {
+            console.error('Error canceling parking slot:', error);
+        }
+    };
+
+    const workspacehandleCancel = async (_id: string) => {
+        try {
+            await axios.delete(`http://localhost:3005/api/v1/workspaces/${_id}/bookings/${userid}`);
+            setWorkspacedetails(prevDetails => prevDetails.filter(parking => parking.workspace_id !== _id));
+        } catch (error) {
+            console.error('Error canceling parking slot:', error);
+        }
+    };
 
     return (
         <div id="wrapper" className={isOpen ? 'toggled' : ''}>
@@ -289,14 +372,65 @@ export const Managerdashboard: React.FC<Props> = (props) => {
                     <div className="row">
                         <div className="col-lg-8 col-lg-offset-2">
                             <Usernav username={user} />
-                            <h2>Event Details</h2>
-                            {eventDetails.length === 0 ? (
-                                <p>No events found for this user.</p>
+                            <div className="dashboardtotalnumbers">
+
+
+                                    <div className="allparkingcard">
+                                        
+
+                                        <div className="parking-card-container">
+                                            
+
+                                            {parkdetails.length > 0 ? (
+                                                parkdetails.map(parking => (
+                                                    <ParkingCard
+                                                        color="#E6CEF8"
+                                                        heading="Parking"
+                                                        imgsrc={parkingimg}
+                                                        key={parking._id}
+                                                        {...parking}
+                                                        onCancel={handleCancel}
+                                                    />
+                                                ))
+                                            ) : (
+                                                <NoBookingCard color='#E6CEF8' heading="No Parking Yet"
+                                                    imgsrc={parkingimg} />
+                                            )}
+                                        </div>
+
+
+                                    </div>
+                                    <div className="workspacecards">
+                                        {workspacedetails.length > 0 ? (workspacedetails.map(workspace => (
+                                            <WorkspaceCard
+                                                color="#D8F1FF" heading="Workspace" imgsrc={workspaceimg}
+                                                key={workspace.workspace_id}
+                                                {...workspace}
+                                                onCancel={workspacehandleCancel}
+                                            />
+
+                                        ))) : (<NoBookingCard color='#D8F1FF' heading="No Workspace Yet"
+                                            imgsrc={workspaceimg} />)}
+                                    </div>
+                                </div>
+                                <div className="dashboardtotalnumbers">
+                                <div className='parking-card-container'>
+                                    <div className="eventbooking">
+                                    {eventDetails.length === 0 ? (
+                                <NoBookingCard color='#D5F7D6' heading="No Event Yet"
+                                imgsrc={eventimg} />
                             ) : (
                                 eventDetails.map(event => (
                                     <EventCard key={event._id} event={event} /> // Render EventCard for each event
                                 ))
                             )}
+                                    </div>
+                                
+                                </div>
+                                            <NoBookingCard color='#D8F1FF' heading="No Feedback Yet"
+                                            imgsrc={feedbackimg} />
+                                </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -319,6 +453,10 @@ export const Securitydashboard = (props: Props) => {
     );
 };
 
+type eventtype={
+    event_name: string,
+        user_id: string,
+}
 
 export const UserDashboard = (props: userProps) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -327,6 +465,7 @@ export const UserDashboard = (props: userProps) => {
     const [contactNumber, setContactNumber] = useState('');
     const [parkdetails, setParkDetails] = useState<parkingdetailscard[]>([]);
     const [workspacedetails, setWorkspacedetails] = useState<worspacetype[]>([]);
+    const [eventdetails, setEventdetails] = useState<eventtype[]>([]);
 
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
@@ -389,6 +528,9 @@ export const UserDashboard = (props: userProps) => {
                 console.error('Error fetching working details:', error);
             }
         };
+        const fetchevnetdetails=async ()=>{
+
+        }
 
         fetchRole();
         fetchParkingDetails();

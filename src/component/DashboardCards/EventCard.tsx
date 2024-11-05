@@ -30,8 +30,7 @@ const EventCard: React.FC<EventCardProps> = ({ event }) => {
             <div className="event-card-content">
                 <h5 className="event-card-title">{event.event_name}</h5>
                 <p><strong>Venue:</strong> {event.venue_name}</p>
-                <p><strong>Organizer ID:</strong> {event.organizer_id}</p>
-                <p><strong>Venue ID:</strong> {event.venue_id}</p>
+                              
                 <p><strong>Start Time:</strong> {event.start_time}</p>
                 <p><strong>End Time:</strong> {event.end_time}</p>
             </div>

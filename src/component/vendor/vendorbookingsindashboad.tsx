@@ -89,7 +89,7 @@ const Vendorbookingsindashboad = (props: Props) => {
 
     return (
         <div className="vendor-bookings-dashboard">
-            <h1>Vendor Bookings Dashboard</h1>
+            <h2>Vendor Bookings </h2>
             <div className="card-container">
                 {vendorSpaces.map(vendor => (
                     <div key={vendor._id} className="vendor-card">
