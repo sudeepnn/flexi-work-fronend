@@ -26,8 +26,8 @@ interface Slot {
 }
 
 type DecodedToken = {
-  userId: string; 
-  role: string;   
+  userId: string;
+  role: string;
 };
 
 const ParkingLayout: React.FC = () => {
@@ -54,17 +54,17 @@ const ParkingLayout: React.FC = () => {
         return;
       }
       try {
-        const decoded: DecodedToken = jwtDecode(token); 
+        const decoded: DecodedToken = jwtDecode(token);
         const userId = decoded.userId;
 
         const userResponse = await axios.get(`http://localhost:3001/api/v1/users/${userId}`);
         setUser(userResponse.data.name);
         setContactNumber(userResponse.data.phone);
         setUserid(userId);
-        
+
       } catch (error) {
         console.error('Error fetching user role:', error);
-      } 
+      }
     };
 
     fetchRole();
@@ -81,24 +81,24 @@ const ParkingLayout: React.FC = () => {
         contact: contactNumber,        // User's contact number
         startTime: new Date().toISOString(), // Current time in ISO format
         _id: selectedSlot._id // The ID of the selected slot
-    }
-    console.log(bookingData)
+      }
+      console.log(bookingData)
       // Assuming a backend API call for booking the slot
       const response = await axios.post(`http://localhost:3000/api/v1/parking/book`, bookingData);
-console.log(response.data);
+      console.log(response.data);
 
       // Update local state to reflect booking changes
       setEastSlots(eastSlots.map(s => (s._id === selectedSlot._id ? { ...s, available: false } : s)));
       setWestSlots(westSlots.map(s => (s._id === selectedSlot._id ? { ...s, available: false } : s)));
       setArea('');
-    setSelectedFloor('');
-    setVehicleType('');
-    setBlocks([]);
-    setSelectedBlock('');
+      setSelectedFloor('');
+      setVehicleType('');
+      setBlocks([]);
+      setSelectedBlock('');
       handleClose(); // Close the modal after booking
-      
+
     } catch (error) {
-      console.error( error);
+      console.error(error);
       console.log(error);
     }
   };
@@ -310,48 +310,116 @@ console.log(response.data);
             <div className="parkingslots">
               {/* East Slots */}
               <div className="topslots">
-                {eastSlots.map((slot) => (
-                  <Button
-                    key={slot._id}
-                    variant="contained"
-                    onClick={() => handleSlotClick(slot)}
-                    sx={{
-                      height: '50px',
-                      bgcolor: slot.available ? 'darkgreen' : 'darkred',
-                      color: 'white',
-                      '&:hover': {
-                        bgcolor: slot.available ? 'darkgreen' : 'darkred',
-                      },
-                    }}
-                    disabled={!slot.available} // Disable if not available
-                    fullWidth
-                  >
-                    {slot.slot_number}
-                  </Button>
-                ))}
+              <div
+  style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(7, 1fr)', // 7 slots per row
+    gap: '10px',
+    justifyContent: 'center',
+  }}
+>
+  {eastSlots.map((slot) => (
+    <div
+      key={slot._id}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        border: '1px solid #ccc',
+        borderRadius: '8px',
+        padding: '10px',
+        backgroundColor: slot.available ? '#e6f7e6' : '#f7e6e6',
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={!slot.available}
+        disabled
+        style={{
+          marginBottom: '8px',
+          transform: 'scale(1.2)',
+        }}
+      />
+      <label style={{ fontWeight: 'bold', marginBottom: '8px' }}>
+        {slot.slot_number}
+      </label>
+      <Button
+        variant="contained"
+        onClick={() => handleSlotClick(slot)}
+        sx={{
+          height: '35px',
+          bgcolor: slot.available ? 'darkgreen' : 'darkred',
+          color: 'white',
+          '&:hover': {
+            bgcolor: slot.available ? 'darkgreen' : 'darkred',
+          },
+        }}
+        disabled={!slot.available}
+        fullWidth
+      >
+        Park
+      </Button>
+    </div>
+  ))}
+</div>
+
               </div>
 
               {/* West Slots */}
               <div className="downslots">
-                {westSlots.map((slot) => (
-                  <Button
-                    key={slot._id}
-                    variant="contained"
-                    onClick={() => handleSlotClick(slot)}
-                    sx={{
-                      height: '50px',
-                      bgcolor: slot.available ? 'darkgreen' : 'darkred',
-                      color: 'white',
-                      '&:hover': {
-                        bgcolor: slot.available ? 'darkgreen' : 'darkred',
-                      },
-                    }}
-                    disabled={!slot.available} // Disable if not available
-                    fullWidth
-                  >
-                    {slot.slot_number}
-                  </Button>
-                ))}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(7, 1fr)', // 7 slots per row
+                    gap: '10px',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {westSlots.map((slot) => (
+                    <div
+                      key={slot._id}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        border: '1px solid #ccc',
+                        borderRadius: '8px',
+                        padding: '10px',
+                        backgroundColor: slot.available ? '#e6f7e6' : '#f7e6e6',
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={!slot.available}
+                        disabled
+                        style={{
+                          marginBottom: '8px',
+                          transform: 'scale(1.2)',
+                        }}
+                      />
+                      <label style={{ fontWeight: 'bold', marginBottom: '8px' }}>
+                        {slot.slot_number}
+                      </label>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleSlotClick(slot)}
+                        sx={{
+                          height: '35px',
+                          bgcolor: slot.available ? 'darkgreen' : 'darkred',
+                          color: 'white',
+                          '&:hover': {
+                            bgcolor: slot.available ? 'darkgreen' : 'darkred',
+                          },
+                        }}
+                        disabled={!slot.available}
+                        fullWidth
+                      >
+                        Park
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+
               </div>
             </div>
           </div>
@@ -390,7 +458,7 @@ console.log(response.data);
         </DialogActions>
       </Dialog>
 
-      
+
     </>
   );
 };

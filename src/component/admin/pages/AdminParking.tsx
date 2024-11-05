@@ -221,46 +221,118 @@ const ParkingLayout: React.FC = () => {
             <div className="parkingslots">
               {/* East Slots */}
               <div className="topslots">
-                {eastSlots.map((slot) => (
-                  <Button
-                    key={slot._id}
-                    variant="contained"
-                    onClick={() => showdetails(slot._id)}
-                    sx={{
-                      height: '50px',
-                      bgcolor: slot.available ? 'darkgreen' : 'darkred',
-                      color: 'white',
-                      '&:hover': {
-                        bgcolor: slot.available ? 'darkgreen' : 'darkred'
-                      }
-                    }}
-                    fullWidth
-                  >
-                    {slot.slot_number}
-                  </Button>
-                ))}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(7, 1fr)', // 7 slots per row
+                    gap: '10px',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {eastSlots.map((slot) => (
+                    <div
+                      key={slot._id}
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        border: '1px solid #ccc',
+                        borderRadius: '8px',
+                        padding: '10px',
+                        backgroundColor: slot.available ? '#e6f7e6' : '#f7e6e6',
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={!slot.available}
+                        disabled
+                        style={{
+                          marginBottom: '8px',
+                          transform: 'scale(1.2)',
+                        }}
+                      />
+                      <label style={{ fontWeight: 'bold', marginBottom: '8px' }}>
+                        {slot.slot_number}
+                      </label>
+                      <Button
+                        variant="contained"
+                        onClick={() => showdetails(slot._id)}
+                        sx={{
+                          height: '35px',
+                          bgcolor: slot.available ? 'darkgreen' : 'darkred',
+                          color: 'white',
+                          '&:hover': {
+                            bgcolor: slot.available ? 'darkgreen' : 'darkred',
+                          },
+                        }}
+                        // Disable if not available
+                        fullWidth
+                      >
+                        Park
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+
+
               </div>
 
               {/* West Slots */}
               <div className="downslots">
-                {westSlots.map((slot) => (
-                  <Button
-                    key={slot._id}
-                    variant="contained"
-                    onClick={() => showdetails(slot._id)}
-                    sx={{
-                      height: '50px',
-                      bgcolor: slot.available ? 'darkgreen' : 'darkred',
-                      color: 'white',
-                      '&:hover': {
-                        bgcolor: slot.available ? 'darkgreen' : 'darkred'
-                      }
-                    }}
-                    fullWidth
-                  >
-                    {slot.slot_number}
-                  </Button>
-                ))}
+              <div
+  style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(7, 1fr)', // 7 slots per row
+    gap: '10px',
+    justifyContent: 'center',
+  }}
+>
+  {westSlots.map((slot) => (
+    <div
+      key={slot._id}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        border: '1px solid #ccc',
+        borderRadius: '8px',
+        padding: '10px',
+        backgroundColor: slot.available ? '#e6f7e6' : '#f7e6e6',
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={!slot.available}
+        disabled
+        style={{
+          marginBottom: '8px',
+          transform: 'scale(1.2)',
+        }}
+      />
+      <label style={{ fontWeight: 'bold', marginBottom: '8px' }}>
+        {slot.slot_number}
+      </label>
+      <Button
+        variant="contained"
+        onClick={() => showdetails(slot._id)}
+        sx={{
+          height: '35px',
+          bgcolor: slot.available ? 'darkgreen' : 'darkred',
+          color: 'white',
+          '&:hover': {
+            bgcolor: slot.available ? 'darkgreen' : 'darkred',
+          },
+        }}
+        // Disable if not available
+        fullWidth
+      >
+        Park
+      </Button>
+    </div>
+  ))}
+</div>
+
+
               </div>
             </div>
           </div>
