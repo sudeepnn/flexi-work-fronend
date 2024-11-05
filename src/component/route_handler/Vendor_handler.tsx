@@ -56,6 +56,12 @@ const Vendorhandler = (props: Props) => {
     switch (role) {
       case 'admin':
         return <VendorAdminDash userid={"admin"} /> ;
+        case 'security':
+        return <div>No access</div>;
+        case 'employee':
+        return <div>No access</div>;
+        case 'manager':
+        return <div>No access</div>;
       case 'vendor':
         return <VendoruserDash userid={user}   />;
         default:

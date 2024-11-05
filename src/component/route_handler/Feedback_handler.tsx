@@ -55,7 +55,21 @@ const FeedbackHandler = (props: Props) => {
     }
   
     // Render different dashboards based on the role
-    return role === 'admin' ? <AdminFeedbackDash userid={"admin"} /> : <FeedbackDash userid={user}   />;
+    switch (role) {
+      case 'admin':
+        return <AdminFeedbackDash userid={"admin"} />;
+      case 'employee':
+        return <FeedbackDash userid={user}   />;
+      case 'vendor':
+        return <div>No access</div>;
+      case 'manager':
+        return <FeedbackDash userid={user}/>;
+      case 'security':
+        return <div>No access</div>;
+      default:
+        return <div>No access</div>; // Handle unauthorized access or unknown roles
+    }
+    // return role === 'admin' ? <AdminFeedbackDash userid={"admin"} /> : <FeedbackDash userid={user}   />;
   };
 
 

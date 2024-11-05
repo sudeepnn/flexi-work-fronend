@@ -30,13 +30,13 @@ const ParkingCard: React.FC<ParkingDetails> = ({ _id, area, block, slot_number, 
         //         Cancel
         //     </button>
         // </div>
-        <div className='userdashboardcard' style={{ backgroundColor: color }}>
-            <div className="userdashboardcardtop">
+        <div className='workdashboardcard' style={{ backgroundColor: color }}>
+            <div className="workdashboardcardtop">
                 <h2>{block + "-" + slot_number}</h2>
                 <img src={imgsrc} alt="" />
             </div>
 
-            <div className="userdashboardcardbelow">
+            <div className="workdashboardcardbelow">
             <p>Area: {area}</p>
             <p>floor: {floor}</p>
             <p>Parking type: {parkingtype}</p>

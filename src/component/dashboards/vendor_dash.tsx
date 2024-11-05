@@ -8,7 +8,7 @@ import EventsRegister from '../user/event_registration';
 import AdminEvent from '../admin/pages/AdminEvent';
 import AdminVendor from '../admin/pages/AdminVendor';
 import VendorUser from '../admin/pages/VendorUser';
-
+import logo from '../resources/logo.png'
 type Props = {};
 type userProps = {
     userid:string |null
@@ -30,7 +30,7 @@ export const VendoruserDash = (props: userProps) => {
                 <ul className="sidebar-nav">
                     <div className="sidebar-header">
                         <div className="sidebar-brand">
-                            <a href="#">Brand</a>
+                        <img src={logo} alt="" />
                         </div>
                     </div>
                     <li><Link to="/dashboard"><div>Dashboard</div></Link></li>
@@ -80,7 +80,7 @@ export const VendorAdminDash = (props: userProps) => {
                 <ul className="sidebar-nav">
                     <div className="sidebar-header">
                         <div className="sidebar-brand">
-                            <a href="#">Brand</a>
+                        <img src={logo} alt="" />
                         </div>
                     </div>
                     <li><Link  to="/dashboard"><div >Dashboard</div></Link></li>
@@ -91,6 +91,7 @@ export const VendorAdminDash = (props: userProps) => {
                     <li><Link  to="/events"><div >Events</div></Link></li>
                     <li><Link  to="/vendor"><div >Vendorstall</div></Link></li>
                     <li><Link  to="/feedback"><div >Feedback</div></Link></li>
+                    <li><Link to="/logout"><div>Logout</div></Link></li>
                     
                 </ul>
             </nav>

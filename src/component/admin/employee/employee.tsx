@@ -89,6 +89,7 @@ const AdminEmployee = (props: Props) => {
           <li><Link to="/events"><div>Events</div></Link></li>
           <li><Link to="/vendor"><div>Vendorstall</div></Link></li>
           <li><Link to="/feedback"><div>Feedback</div></Link></li>
+          <li><Link to="/logout"><div>Logout</div></Link></li>
         </ul>
       </nav>
 

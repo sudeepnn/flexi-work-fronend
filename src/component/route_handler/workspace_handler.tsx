@@ -53,8 +53,22 @@ const Workspacehandler = (props: Props) => {
       return <Navigate to="/login" />;
     }
   
+    switch (role) {
+      case 'admin':
+        return <AdminWorkspacedash userid={"admin"} />;
+      case 'employee':
+        return <UserWorkspace userid={user}   />;
+      case 'vendor':
+        return <div>No access</div>;
+      case 'manager':
+        return <UserWorkspace userid={user}/>;
+      case 'security':
+        return <div>No access</div>;
+      default:
+        return <div>No access</div>; // Handle unauthorized access or unknown roles
+    }
     // Render different dashboards based on the role
-    return role === 'admin' ? <AdminWorkspacedash userid='Admin' /> : <UserWorkspace userid={user}   />;
+    // return role === 'admin' ? <AdminWorkspacedash userid='Admin' /> : <UserWorkspace userid={user}   />;
   };
 
 

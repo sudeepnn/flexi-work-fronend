@@ -4,8 +4,8 @@ import '../admin/Sidebar.css';
 import Countcard from '../admin/countcard/Countcard';
 import empimg from '../resources/emp.png';
 import parkingimg from '../resources/parking.png';
-import event from '../resources/event.png';
-import feedback from '../resources/feedback.png';
+import eventimg from '../resources/event.png';
+import feedbackimg from '../resources/feedback.png';
 import stall from '../resources/stall.png';
 import EventDetailcard from '../admin/Eventdetailscard/Eventdetailcard';
 import workspaceimg from '../resources/workspace.png';
@@ -17,6 +17,8 @@ import WorkspaceCard from '../DashboardCards/WorkspaceCard';
 import Vendorbookingsindashboad from '../vendor/vendorbookingsindashboad';
 import SecurityDashdetails from '../security/SecurityDashdetails';
 import EventCard from '../DashboardCards/EventCard';
+import NoBookingCard from '../DashboardCards/NoBookingCard';
+import logo from '../resources/logo.png'
 
 type Props = {};
 
@@ -39,14 +41,14 @@ type parkingdetailscard = {
     parkingtype: string;
 };
 
-type worspacetype={
+type worspacetype = {
     _id: string;
     userId: string,
     name: string
     contact: string
     startTime: string
-    workspace_id:string,
-    project:string
+    workspace_id: string,
+    project: string
 
 }
 
@@ -56,45 +58,45 @@ type eventDetailsType = {
     organizer_id: string; // ID of the organizer
     venue_id: string;    // ID of the venue
     start_time: string;  // Start time of the event (can be a date string)
-    end_time: string;  
+    end_time: string;
     imgurl: string;
     venue_name: string;  // End time of the event (can be a date string)
 };
 
 export const Dashboard = (props: Props) => {
     const [isOpen, setIsOpen] = useState(false);
-    const [totalpkcnt,setTotalpkcnt]=useState(0);
-    const [totalpkoccupied,setTotalpkoccupied]=useState(0);
-    const [totalwkcnt,setTotalwkcnt]=useState(0);
-    const [totalwkunoccupied,setTotalwkunoccupied]=useState(0);
-    const [totalvendorcnt,setTotalvendorcnt]=useState(0);
-    const [totalvendorunoccupied,setTotalvendorunoccupied]=useState(0);
-    const [totalEmp,setemployeecnt]=useState(0);
-    const [totalMan,setmanagercnt]=useState(0);
+    const [totalpkcnt, setTotalpkcnt] = useState(0);
+    const [totalpkoccupied, setTotalpkoccupied] = useState(0);
+    const [totalwkcnt, setTotalwkcnt] = useState(0);
+    const [totalwkunoccupied, setTotalwkunoccupied] = useState(0);
+    const [totalvendorcnt, setTotalvendorcnt] = useState(0);
+    const [totalvendorunoccupied, setTotalvendorunoccupied] = useState(0);
+    const [totalEmp, setemployeecnt] = useState(0);
+    const [totalMan, setmanagercnt] = useState(0);
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
 
-    useEffect(()=>{
-            (async()=>{
-                try {
-                    const response = await axios.get('http://localhost:3001/api/v1/usersemp/counts');
-                    setemployeecnt(response.data.totalEmployees); 
-                    setmanagercnt(response.data.totalManagers); 
-                    const parkingresponse = await axios.get('http://localhost:3000/api/v1//parkingcntdetails');
-                    setTotalpkoccupied(parkingresponse.data.notAvailableCount);
-                    setTotalpkcnt(parkingresponse.data.totalSlots)
-                    const workspaceresponse = await axios.get('http://localhost:3005/api/v1/workspacescntdetails');
-                    setTotalwkunoccupied(workspaceresponse.data.availableCount);
-                    setTotalwkcnt(workspaceresponse.data.totalSlots)
-                    const vendorresponse = await axios.get('http://localhost:3008/api/v1/vendorspacecntdetails');
-                    setTotalvendorunoccupied(vendorresponse.data.availableCount);
-                    setTotalvendorcnt(vendorresponse.data.totalSlots)
-                } catch (error) {
-                    console.error('Error fetching employee count:', error);
-                }
-            })()
-    },[])
+    useEffect(() => {
+        (async () => {
+            try {
+                const response = await axios.get('http://localhost:3001/api/v1/usersemp/counts');
+                setemployeecnt(response.data.totalEmployees);
+                setmanagercnt(response.data.totalManagers);
+                const parkingresponse = await axios.get('http://localhost:3000/api/v1//parkingcntdetails');
+                setTotalpkoccupied(parkingresponse.data.notAvailableCount);
+                setTotalpkcnt(parkingresponse.data.totalSlots)
+                const workspaceresponse = await axios.get('http://localhost:3005/api/v1/workspacescntdetails');
+                setTotalwkunoccupied(workspaceresponse.data.availableCount);
+                setTotalwkcnt(workspaceresponse.data.totalSlots)
+                const vendorresponse = await axios.get('http://localhost:3008/api/v1/vendorspacecntdetails');
+                setTotalvendorunoccupied(vendorresponse.data.availableCount);
+                setTotalvendorcnt(vendorresponse.data.totalSlots)
+            } catch (error) {
+                console.error('Error fetching employee count:', error);
+            }
+        })()
+    }, [])
 
     return (
         <div id="wrapper" className={isOpen ? 'toggled' : ''}>
@@ -105,14 +107,14 @@ export const Dashboard = (props: Props) => {
                 <ul className="sidebar-nav">
                     <div className="sidebar-header">
                         <div className="sidebar-brand">
-                            <a href="#">Brand</a>
+                        <img src={logo} alt="" />
                         </div>
                     </div>
                     <li><Link to="/dashboard"><div>Dashboard</div></Link></li>
                     <li><Link to="/employees"><div>Employees</div></Link></li>
                     <li><Link to="/parking"><div>Parking</div></Link></li>
                     <li><Link to="/workspace"><div>Workspace</div></Link></li>
-                    
+
                     <li><Link to="/events"><div>Events</div></Link></li>
                     <li><Link to="/vendor"><div>Vendorstall</div></Link></li>
                     <li><Link to="/feedback"><div>Feedback</div></Link></li>
@@ -132,17 +134,17 @@ export const Dashboard = (props: Props) => {
                         <div className="col-lg-8 col-lg-offset-2">
                             <Usernav username="admin" />
                             <div className="dashboardtotalnumbers">
-                                <Countcard color="#D8F1FF" imgscr={empimg} totalno={totalEmp+totalMan} totalnumberof="Total no of Employees" />
+                                <Countcard color="#D8F1FF" imgscr={empimg} totalno={totalEmp + totalMan} totalnumberof="Total no of Employees" />
                                 <Countcard color="#E6CEF8" imgscr={parkingimg} totalno={totalpkcnt} totalnumberof="Total no of Parking slot" />
                                 <Countcard color="#D5E2F1" imgscr={workspaceimg} totalno={totalwkcnt} totalnumberof="Total no of Workspace" />
-                                <Countcard color="#D5F7D6" imgscr={event} totalno={1241} totalnumberof="Total no of Event Venue" />
+                                <Countcard color="#D5F7D6" imgscr={eventimg} totalno={1241} totalnumberof="Total no of Event Venue" />
                                 <Countcard color="#FBE6D2" imgscr={stall} totalno={totalvendorcnt} totalnumberof="Total no of Vendor Stall" />
                             </div>
                             <div className="cardwithinfo">
                                 <EventDetailcard blockName="Parking" totalno={totalpkcnt} occupied={totalpkoccupied} displyname="Parking" />
-                                <EventDetailcard blockName="Workspace" totalno={totalwkcnt} occupied={totalwkcnt-totalwkunoccupied} displyname="Workspace" />
+                                <EventDetailcard blockName="Workspace" totalno={totalwkcnt} occupied={totalwkcnt - totalwkunoccupied} displyname="Workspace" />
                                 <EventDetailcard blockName="Event Venue" totalno={43} occupied={12} displyname="Vendor Stall" />
-                                <EventDetailcard blockName="Vendor Stall" totalno={totalvendorcnt} occupied={totalvendorcnt-totalvendorunoccupied} displyname="Vendor Stall" />
+                                <EventDetailcard blockName="Vendor Stall" totalno={totalvendorcnt} occupied={totalvendorcnt - totalvendorunoccupied} displyname="Vendor Stall" />
                             </div>
                         </div>
                     </div>
@@ -188,7 +190,7 @@ export const Vendordashboard = (props: Props) => {
                     <div className="row">
                         <div className="col-lg-8 col-lg-offset-2">
                             <Usernav username="admin" />
-                            <Vendorbookingsindashboad/>
+                            <Vendorbookingsindashboad />
                         </div>
                     </div>
                 </div>
@@ -232,7 +234,7 @@ export const Managerdashboard: React.FC<Props> = (props) => {
             try {
                 const eventResponse = await axios.get(`http://localhost:3003/api/v1/venue/${userid}`);
                 console.log(eventResponse)
-                const eventDetailsArray = eventResponse.data.flatMap((venue: any) => 
+                const eventDetailsArray = eventResponse.data.flatMap((venue: any) =>
                     venue.event.map((event: any) => ({
                         _id: event._id,
                         event_name: event.event_name,
@@ -245,7 +247,7 @@ export const Managerdashboard: React.FC<Props> = (props) => {
                     }))
                 );
                 setEventDetails(eventDetailsArray);
-        console.log("Event Details Array:", eventDetailsArray);
+                console.log("Event Details Array:", eventDetailsArray);
             } catch (error) {
                 console.error('Error fetching event details:', error);
             }
@@ -264,7 +266,7 @@ export const Managerdashboard: React.FC<Props> = (props) => {
                 <ul className="sidebar-nav">
                     <div className="sidebar-header">
                         <div className="sidebar-brand">
-                            <a href="#">Brand</a>
+                        <img src={logo} alt="" />
                         </div>
                     </div>
                     <li><Link to="/dashboard"><div>Dashboard</div></Link></li>
@@ -286,7 +288,7 @@ export const Managerdashboard: React.FC<Props> = (props) => {
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-8 col-lg-offset-2">
-                        <Usernav username={user} />
+                            <Usernav username={user} />
                             <h2>Event Details</h2>
                             {eventDetails.length === 0 ? (
                                 <p>No events found for this user.</p>
@@ -304,16 +306,16 @@ export const Managerdashboard: React.FC<Props> = (props) => {
 };
 
 export const Securitydashboard = (props: Props) => {
-    
+
 
     return (
         <div>
             <div className="nav">
-                <Link style={{color:'white',marginRight:"20px",textDecoration:"none"}} to='/logout'>logout</Link>
+                <Link style={{ color: 'white', marginRight: "20px", textDecoration: "none" }} to='/logout'>logout</Link>
             </div>
-            <SecurityDashdetails/>
+            <SecurityDashdetails />
         </div>
-        
+
     );
 };
 
@@ -376,8 +378,8 @@ export const UserDashboard = (props: userProps) => {
                     name: data.name,
                     contact: data.contact,
                     startTime: data.startTime,
-                    project:data.project,
-                    workspace_id:data.workspace_id
+                    project: data.project,
+                    workspace_id: data.workspace_id
 
                 }));
                 setWorkspacedetails(workdataArray);
@@ -420,7 +422,7 @@ export const UserDashboard = (props: userProps) => {
                 <ul className="sidebar-nav">
                     <div className="sidebar-header">
                         <div className="sidebar-brand">
-                            <a href="#">Brand</a>
+                            <img src={logo} alt="" />
                         </div>
                     </div>
                     <li><Link to="/dashboard"><div>Dashboard</div></Link></li>
@@ -446,31 +448,52 @@ export const UserDashboard = (props: userProps) => {
                             <div className="dashboardroute">
                                 <div className="dashboardtotalnumbers">
 
+
                                     <div className="allparkingcard">
                                         
-                                        <div className="parking-card-container">
 
-                                            {parkdetails.map(parking => (
-                                                <ParkingCard
-                                                    color="#E6CEF8" heading="Parking" imgsrc={parkingimg}
-                                                    key={parking._id}
-                                                    {...parking}
-                                                    onCancel={handleCancel}
-                                                />
-                                            ))}
+                                        <div className="parking-card-container">
+                                            
+
+                                            {parkdetails.length > 0 ? (
+                                                parkdetails.map(parking => (
+                                                    <ParkingCard
+                                                        color="#E6CEF8"
+                                                        heading="Parking"
+                                                        imgsrc={parkingimg}
+                                                        key={parking._id}
+                                                        {...parking}
+                                                        onCancel={handleCancel}
+                                                    />
+                                                ))
+                                            ) : (
+                                                <NoBookingCard color='#E6CEF8' heading="No Parking Yet"
+                                                    imgsrc={parkingimg} />
+                                            )}
                                         </div>
+
+
                                     </div>
                                     <div className="workspacecards">
-                                        {workspacedetails.map(workspace=>(
-                                             <WorkspaceCard
-                                                 color="#D8F1FF" heading="Workspace" imgsrc={workspaceimg}
-                                                 key={workspace.workspace_id}
-                                                 {...workspace}
-                                                 onCancel={workspacehandleCancel}
-                                             />
-     
-                                        ))}
+                                        {workspacedetails.length > 0 ? (workspacedetails.map(workspace => (
+                                            <WorkspaceCard
+                                                color="#D8F1FF" heading="Workspace" imgsrc={workspaceimg}
+                                                key={workspace.workspace_id}
+                                                {...workspace}
+                                                onCancel={workspacehandleCancel}
+                                            />
+
+                                        ))) : (<NoBookingCard color='#D8F1FF' heading="No Workspace Yet"
+                                            imgsrc={workspaceimg} />)}
                                     </div>
+                                </div>
+                                <div className="dashboardtotalnumbers">
+                                <div className='parking-card-container'>
+                                <NoBookingCard color='#D5F7D6' heading="No Event Yet"
+                                            imgsrc={eventimg} />
+                                </div>
+                                            <NoBookingCard color='#D8F1FF' heading="No Feedback Yet"
+                                            imgsrc={feedbackimg} />
                                 </div>
                             </div>
                         </div>

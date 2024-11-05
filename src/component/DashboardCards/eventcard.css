@@ -47,3 +47,45 @@
     color: #555;
     font-size: 0.95em;
 }
+.noparking{
+    width: 350px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 15px;
+    border-radius: 10px;
+}
+.workdashboardcard{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 10px;
+    padding: 5px;
+    height: 195px;
+    width: 300px;
+}
+.workdashboardcard .workdashboardcardtop{
+    width: 80%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    
+  }
+  .workdashboardcard .workdashboardcardbelow{
+    width: 80%;
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-direction: column;
+    
+  }
+  .workdashboardcardbelow button{
+    cursor: pointer;
+  }
+  .dashboardroute{
+    margin-top: 20px;
+  }
