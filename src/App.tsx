@@ -24,6 +24,7 @@ import { FeedbackDash } from './component/dashboards/Feedback_dash';
 import Adminvenue from './component/admin/venue/AdminEvenue';
 import Vendorhandler from './component/route_handler/Vendor_handler';
 import Logout from './component/landing/Logout';
+import Employeehandler from './component/route_handler/employeehandler';
 
 
 const App: React.FC = () => {
@@ -41,7 +42,7 @@ const App: React.FC = () => {
         <Route path="/vendor" element={<Vendorhandler />} />
         <Route path="/logout" element={<Logout />} />
         
-        <Route path="/employees" element={<AdminEmployee />} />
+        <Route path="/employees" element={<Employeehandler />} />
         <Route path="/venue" element={<Adminvenue />} />
         <Route path="/dev/parking" element={<AdminParkingDash userid="1234"   />} />
         <Route path="/dev/workspace" element={<AdminWorkspacedash userid="1234"   />} />

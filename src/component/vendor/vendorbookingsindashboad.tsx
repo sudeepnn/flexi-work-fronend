@@ -1,8 +1,9 @@
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
 import Snackbar from '@mui/material/Snackbar'; // Assuming you're using Material-UI for Snackbar
-import './vendorstyle.css'
+import './vendorstyle.css';
+
 type Props = {};
 type DecodedToken = {
     userId: string; 
@@ -33,10 +34,11 @@ const Vendorbookingsindashboad = (props: Props) => {
     const [vendorSpaces, setVendorSpaces] = useState<VendorSpace[]>([]);
     const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false); // State for snackbar visibility
     const [snackbarMessage, setSnackbarMessage] = useState<string>(''); // State for snackbar message
+    const [refresh, setRefresh] = useState<boolean>(false); // State to trigger re-fetch
 
     useEffect(() => {
         fetchRoleAndVendorSpaces(); // Initial fetch on component mount
-    }, [snackbarMessage]);
+    }, [refresh]); // Depend on `refresh` to re-fetch data
 
     const fetchRoleAndVendorSpaces = async () => {
         const token = localStorage.getItem('token');
@@ -71,7 +73,7 @@ const Vendorbookingsindashboad = (props: Props) => {
             setSnackbarMessage(response.data.message);
             setSnackbarOpen(true); // Open snackbar
 
-           
+            setRefresh(!refresh); // Trigger re-fetch by toggling refresh state
         } catch (error) {
             console.error('Error canceling booking:', error);
             setSnackbarMessage('Failed to cancel booking');
@@ -91,27 +93,35 @@ const Vendorbookingsindashboad = (props: Props) => {
         <div className="vendor-bookings-dashboard">
             <h2>Vendor Bookings </h2>
             <div className="card-container">
-                {vendorSpaces.map(vendor => (
-                    <div key={vendor._id} className="vendor-card">
-                        <img src={vendor.imgurl} alt={vendor.stallname} />
-                        <h2>{vendor.stallname}</h2>
-                        <p>Rent: ₹{vendor.rent}</p>
-                        <p>Status: {vendor.avalablestatus ? 'Available' : 'Not Available'}</p>
-                        {vendor.bookings.length > 0 && (
-                            <div>
-                                <h3>Bookings:</h3>
-                                {vendor.bookings.map(booking => (
-                                    <div key={booking._id}>
-                                        <p>Name: {booking.name}</p>
-                                        <p>Phone: {booking.phone}</p>
-                                        <p>Booked Date: {new Date(booking.bookeddate).toLocaleDateString()}</p>
-                                        <button onClick={() => handleCancelBooking(vendor._id, booking._id, booking.userid)}>Cancel Booking</button>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                {vendorSpaces.length > 0 ? (
+                    vendorSpaces.map(vendor => (
+                        <div key={vendor._id} className="vendor-card">
+                            <img src={vendor.imgurl} alt={vendor.stallname} />
+                            <h2>{vendor.stallname}</h2>
+                            <p>Rent: ₹{vendor.rent}</p>
+                            <p>Status: {vendor.avalablestatus ? 'Available' : 'Not Available'}</p>
+                            {vendor.bookings.length > 0 ? (
+                                <div>
+                                    <h3>Bookings:</h3>
+                                    {vendor.bookings.map(booking => (
+                                        <div key={booking._id}>
+                                            <p>Name: {booking.name}</p>
+                                            <p>Phone: {booking.phone}</p>
+                                            <p>Booked Date: {new Date(booking.bookeddate).toLocaleDateString()}</p>
+                                            <button onClick={() => handleCancelBooking(vendor._id, booking._id, booking.userid)}>Cancel Booking</button>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>No bookings available</p> // Default message when no bookings
+                            )}
+                        </div>
+                    ))
+                ) : (
+                    <div className="vendor-card">
+                        <p>No vendor spaces available.</p> {/* Default card when no vendor spaces */}
                     </div>
-                ))}
+                )}
             </div>
 
             {/* Snackbar for notifications */}

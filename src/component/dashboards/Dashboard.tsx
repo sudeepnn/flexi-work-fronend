@@ -74,6 +74,8 @@ export const Dashboard = (props: Props) => {
     const [totalvendorunoccupied, setTotalvendorunoccupied] = useState(0);
     const [totalEmp, setemployeecnt] = useState(0);
     const [totalMan, setmanagercnt] = useState(0);
+    const [eventcount, setEventcount] = useState(0);
+    const [eventvenueavacount, setEventvenueavacount] = useState(0);
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
@@ -93,6 +95,9 @@ export const Dashboard = (props: Props) => {
                 const vendorresponse = await axios.get('http://localhost:3008/api/v1/vendorspacecntdetails');
                 setTotalvendorunoccupied(vendorresponse.data.availableCount);
                 setTotalvendorcnt(vendorresponse.data.totalSlots)
+                const venueresponse = await axios.get('http://localhost:3003/api/v1/count');
+                setEventcount(venueresponse.data.count);
+                setEventvenueavacount(venueresponse.data.availableSpace)
             } catch (error) {
                 console.error('Error fetching employee count:', error);
             }
@@ -138,13 +143,13 @@ export const Dashboard = (props: Props) => {
                                 <Countcard color="#D8F1FF" imgscr={empimg} totalno={totalEmp + totalMan} totalnumberof="Total no of Employees" />
                                 <Countcard color="#E6CEF8" imgscr={parkingimg} totalno={totalpkcnt} totalnumberof="Total no of Parking slot" />
                                 <Countcard color="#D5E2F1" imgscr={workspaceimg} totalno={totalwkcnt} totalnumberof="Total no of Workspace" />
-                                <Countcard color="#D5F7D6" imgscr={eventimg} totalno={1241} totalnumberof="Total no of Event Venue" />
+                                <Countcard color="#D5F7D6" imgscr={eventimg} totalno={eventcount} totalnumberof="Total no of Event Venue" />
                                 <Countcard color="#FBE6D2" imgscr={stall} totalno={totalvendorcnt} totalnumberof="Total no of Vendor Stall" />
                             </div>
                             <div className="cardwithinfo">
                                 <EventDetailcard blockName="Parking" totalno={totalpkcnt} occupied={totalpkoccupied} displyname="Parking" />
                                 <EventDetailcard blockName="Workspace" totalno={totalwkcnt} occupied={totalwkcnt - totalwkunoccupied} displyname="Workspace" />
-                                <EventDetailcard blockName="Event Venue" totalno={43} occupied={12} displyname="Vendor Stall" />
+                                <EventDetailcard blockName="Event Venue" totalno={eventcount} occupied={eventcount-eventvenueavacount} displyname="Event Venue" />
                                 <EventDetailcard blockName="Vendor Stall" totalno={totalvendorcnt} occupied={totalvendorcnt - totalvendorunoccupied} displyname="Vendor Stall" />
                             </div>
                             
