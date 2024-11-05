@@ -86,18 +86,17 @@ const AdminFeedback = () => {
   }
 
   return (
-    <Box sx={{ padding: 2 }}>
+    <Box sx={{ padding: 2, marginRight: 3, paddingLeft: 3 }}>
       <Typography variant="h4" gutterBottom>
         Feedback
       </Typography>
-      <TableContainer component={Paper} sx={{ marginTop: 2 }}>
+      <TableContainer component={Paper} sx={{ marginTop: 3 }}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>User ID</TableCell>
               <TableCell>Type</TableCell>
               <TableCell>Message</TableCell>
-              <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -106,15 +105,6 @@ const AdminFeedback = () => {
                 <TableCell>{item.user_id}</TableCell>
                 <TableCell>{item.type}</TableCell>
                 <TableCell>{item.message}</TableCell>
-                <TableCell>
-                  <Button
-                    variant="outlined"
-                    color="primary"
-                    onClick={() => handleResponseOpen(item._id)}
-                  >
-                    Respond
-                  </Button>
-                </TableCell>
               </TableRow>
             ))}
           </TableBody>

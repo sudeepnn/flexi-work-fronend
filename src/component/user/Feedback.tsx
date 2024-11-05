@@ -7,6 +7,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
@@ -22,6 +24,7 @@ const Feedback = (props: Props) => {
   const [name, setName] = useState('');
   const [userId, setUserId] = useState('');
   const [feedbackType, setFeedbackType] = useState('');
+  const [openSnackbar, setOpenSnackbar] = useState(false); // Snackbar visibility
 
   useEffect(() => {
     const fetchUserFromToken = async () => {
@@ -51,17 +54,23 @@ const Feedback = (props: Props) => {
       type: feedbackType,
       message: feedback,
     };
-    console.log(payload)
+    console.log(payload);
 
     try {
       const response = await axios.post('http://localhost:3002/api/v1/feedback', payload);
       console.log('Feedback submitted successfully:', response.data);
-      // Optionally, you can reset the form fields here
+
+      // Reset the form fields
       setFeedback('');
       setFeedbackType('');
+      setOpenSnackbar(true); // Show Snackbar on success
     } catch (error) {
       console.error('Error submitting feedback:', error);
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setOpenSnackbar(false);
   };
 
   return (
@@ -104,6 +113,18 @@ const Feedback = (props: Props) => {
           Submit
         </Button>
       </form>
+
+      {/* Snackbar for feedback submission success */}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{ width: '100%' }}>
+          Feedback submitted successfully!
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
