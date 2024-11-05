@@ -125,10 +125,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 300px;
+    width: 400px;
     flex-direction: column;
     border-radius: 10px;
     padding: 5px;
+    height: 200px;
   }
   .userdashboardcard .userdashboardcardtop{
     width: 80%;
@@ -160,3 +161,7 @@
     
     
   }
+  .sidebar-brand img{
+    height: 45px;
+    width: 95px;
+}

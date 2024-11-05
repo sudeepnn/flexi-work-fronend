@@ -66,11 +66,11 @@ const LoginForm: React.FC = () => {
         <div className="left">
           <div className="welcomgrp">
             <h3>Welcome to Login</h3>
-            <h4>Create an account?</h4>
+            {/* <h4>Create an account?</h4> */}
           </div>
-          <Link to="/signup" className="linktologin">
+          {/* <Link to="/signup" className="linktologin">
             <button>Sign up</button>
-          </Link>
+          </Link> */}
         </div>
         <div className="right">
           <h3>Login</h3>

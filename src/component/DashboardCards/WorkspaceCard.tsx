@@ -21,13 +21,13 @@ const WorkspaceCard: React.FC<workDetails> = ({ _id, userId, name, contact, star
     return (
         
       
-        <div className='userdashboardcard' style={{ backgroundColor: color }}>
-            <div className="userdashboardcardtop">
+        <div className='workdashboardcard' style={{ backgroundColor: color }}>
+            <div className="workdashboardcardtop">
                 <h2>{ workspace_id}</h2>
                 <img src={imgsrc} alt="" />
             </div>
 
-            <div className="userdashboardcardbelow">
+            <div className="workdashboardcardbelow">
                 <p>Project: {project}</p>
                 
                 <button onClick={() => onCancel(workspace_id)} style={{ marginTop: '10px', padding: '8px 12px', backgroundColor: '#a8dbf8', color: 'black', border: 'none', borderRadius: '4px' }}>

@@ -71,6 +71,7 @@ const UserNav = (props: Props) => {
       setIsOnDcMember(userData.isOnDcMember); // Assuming isOnDcMember is a boolean in the response
       setProject(userData.project);
       setManager(userData.manager);
+      console.log(isOnDcMember)
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -113,7 +114,7 @@ const UserNav = (props: Props) => {
         address,
         // role: 'user', // Set according to your app logic
         profileImage: profileImageUrl,
-        isOndcMember: isOnDcMember === 'yes',
+        isOndcMember: isOnDcMember ,
         project,
         manager,
       };
@@ -138,93 +139,50 @@ const UserNav = (props: Props) => {
         </Link>
       </div>
 
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Update User Details</DialogTitle>
-        <DialogContent>
-          <input
-            accept="image/*"
-            style={{ display: 'none' }}
-            id="upload-profile-pic"
-            type="file"
-            onChange={handleProfilePicChange}
-          />
-          
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '16px', alignItems: 'center', flexDirection: 'column' }}>
+      <Dialog open={open} onClose={handleClose} PaperProps={{
+        style: { width: '700px' }, // Custom width for the dialog
+    }}>
+        <DialogTitle>User Details</DialogTitle>
+        <DialogContent >
+        <div
+            style={{
+                display: 'flex',
+                justifyContent: 'center',
+                marginBottom: '16px',
+                alignItems: 'center',
+                flexDirection: 'column',
+            }}
+        >
             <img src={profilePic} alt="Profile" className="circular-image" />
-            <label htmlFor="upload-profile-pic">
-              <Button variant="contained" component="span" style={{ margin: '16px' }}>
-                Upload Profile Picture
-              </Button>
-            </label>
-          </div>
+        </div>
 
-          <TextField
-            label="name"
-            value={props.username || ''}
-            disabled
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="UID"
-            value={user || ''}
-            disabled
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Address"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Is On DC Member</InputLabel>
-            <Select
-              value={isOnDcMember}
-              onChange={(e) => setIsOnDcMember(e.target.value)}
-            >
-              <MenuItem value="yes">Yes</MenuItem>
-              <MenuItem value="no">No</MenuItem>
-            </Select>
-          </FormControl>
-          <TextField
-            label="Project"
-            value={project}
-            onChange={(e) => setProject(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            label="Manager"
-            value={manager}
-            onChange={(e) => setManager(e.target.value)}
-            fullWidth
-            margin="normal"
-          />
-        </DialogContent>
+        <div className="user-details-container">
+            <div className="detail-item">
+                <strong>Name:</strong> <span>{props.username || 'N/A'}</span>
+            </div>
+            <div className="detail-item">
+                <strong>UID:</strong> <span>{user || 'N/A'}</span>
+            </div>
+            <div className="detail-item">
+                <strong>Email:</strong> <span>{email || 'N/A'}</span>
+            </div>
+            <div className="detail-item">
+                <strong>Address:</strong> <span>{address || 'N/A'}</span>
+            </div>
+            <div className="detail-item">
+                <strong>Phone:</strong> <span>{phone || 'N/A'}</span>
+            </div>
+            <div className="detail-item">
+                <strong>Is ODC Member:</strong> <span>{ isOnDcMember == 'true' ? 'Yes' : 'No'}</span>
+            </div>
+            <div className="detail-item">
+                <strong>Project:</strong> <span>{project || 'N/A'}</span>
+            </div>
+            <div className="detail-item">
+                <strong>Manager:</strong> <span>{manager || 'N/A'}</span>
+            </div>
+        </div>
+    </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel

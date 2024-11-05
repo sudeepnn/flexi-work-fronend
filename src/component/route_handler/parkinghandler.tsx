@@ -55,7 +55,21 @@ const Parkinghandler = (props: Props) => {
     }
   
     // Render different dashboards based on the role
-    return role === 'admin' ? <AdminParkingDash  userid={user}/> : <UserParkingDash userid={user}   />;
+    switch (role) {
+      case 'admin':
+        return <AdminParkingDash userid={"admin"} />;
+      case 'employee':
+        return <UserParkingDash userid={user}   />;
+      case 'vendor':
+        return <div>No access</div>;
+      case 'manager':
+        return <UserParkingDash userid={user}/>;
+      case 'security':
+        return <div>No access</div>;
+      default:
+        return <div>No access</div>; // Handle unauthorized access or unknown roles
+    }
+    // return role === 'admin' ? <AdminParkingDash  userid={user}/> : <UserParkingDash userid={user}   />;
   };
 
 

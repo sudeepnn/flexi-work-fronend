@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 
 import Parking from '../user/parking';
 import AdminParking from '../admin/pages/AdminParking';
+import logo from '../resources/logo.png'
 
 type Props = {};
 type userProps = {
@@ -28,7 +29,7 @@ export const UserParkingDash = (props: userProps) => {
                 <ul className="sidebar-nav">
                     <div className="sidebar-header">
                         <div className="sidebar-brand">
-                            <a href="#">Brand</a>
+                        <img src={logo} alt="" />
                         </div>
                     </div>
                     <li><Link  to="/dashboard"><div >Dashboard</div></Link></li>
@@ -36,6 +37,7 @@ export const UserParkingDash = (props: userProps) => {
                     <li><Link  to="/parking"><div >Parking</div></Link></li>
                     <li><Link  to="/events"><div >Events</div></Link></li>
                     <li><Link  to="/feedback"><div >Feedback</div></Link></li>
+                    <li><Link to="/logout"><div>Logout</div></Link></li>
                     
                 </ul>
             </nav>
@@ -79,17 +81,18 @@ export const AdminParkingDash = (props: userProps) => {
                 <ul className="sidebar-nav">
                     <div className="sidebar-header">
                         <div className="sidebar-brand">
-                            <a href="#">Brand</a>
+                        <img src={logo} alt="" />
                         </div>
                     </div>
                     <li><Link  to="/dashboard"><div >Dashboard</div></Link></li>
                     <li><Link  to="/employees"><div >Employees</div></Link></li>
                     <li><Link  to="/parking"><div >Parking</div></Link></li>
                     <li><Link  to="/workspace"><div >Workspace</div></Link></li>
-                    <li><Link  to="/venue"><div >Venue</div></Link></li>
+                   
                     <li><Link  to="/events"><div >Events</div></Link></li>
                     <li><Link  to="/vendor"><div >Vendorstall</div></Link></li>
                     <li><Link  to="/feedback"><div >Feedback</div></Link></li>
+                    <li><Link to="/logout"><div>Logout</div></Link></li>
                     
                 </ul>
             </nav>
