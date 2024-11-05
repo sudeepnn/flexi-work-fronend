@@ -43,11 +43,8 @@ const App: React.FC = () => {
         <Route path="/logout" element={<Logout />} />
         
         <Route path="/employees" element={<Employeehandler />} />
-        <Route path="/venue" element={<Adminvenue />} />
-        <Route path="/dev/parking" element={<AdminParkingDash userid="1234"   />} />
-        <Route path="/dev/workspace" element={<AdminWorkspacedash userid="1234"   />} />
-        <Route path="/dev/event" element={<UserEventDash userid="1234"   />} />
-        <Route path="/dev/feedback" element={<FeedbackDash userid="1234"   />} />
+        {/* <Route path="/venue" element={<Adminvenue />} /> */}
+        
         </>
        /* <Route path="*" element={<Navigate to="/not-found" />} />
         <Route path="/not-found" element={<NotFound />} /> */}
