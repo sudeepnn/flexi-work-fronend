@@ -109,6 +109,7 @@ const EventsRegister = (props: Props) => {
         user_id: userId,
       });
 
+
       if (response.status === 201) {
         setSnackbarSeverity('success');
         setSnackbarMessage("Successfully registered for the event!");
