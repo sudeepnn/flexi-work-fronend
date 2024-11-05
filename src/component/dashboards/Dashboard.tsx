@@ -341,6 +341,17 @@ export const Managerdashboard: React.FC<Props> = (props) => {
         }
     };
 
+    const handleEventCancel = async (eventId: string) => {
+        try {
+            // Making DELETE request to cancel the event
+            await axios.delete(`http://localhost:3003/api/v1/event/${eventId}`);
+            // Filtering out the cancelled event from the eventDetails state
+            setEventDetails(prevDetails => prevDetails.filter(event => event._id !== eventId));
+        } catch (error) {
+            console.error('Error cancelling event:', error);
+        }
+    };
+
     return (
         <div id="wrapper" className={isOpen ? 'toggled' : ''}>
             <div className="overlay" style={{ display: isOpen ? 'block' : 'none' }} onClick={toggleSidebar}></div>
@@ -422,7 +433,8 @@ export const Managerdashboard: React.FC<Props> = (props) => {
                                 imgsrc={eventimg} />
                             ) : (
                                 eventDetails.map(event => (
-                                    <EventCard key={event._id} event={event} /> // Render EventCard for each event
+                                    <EventCard key={event._id} event={event}
+                                    onCancel = {handleEventCancel} /> // Render EventCard for each event
                                 ))
                             )}
                                     </div>

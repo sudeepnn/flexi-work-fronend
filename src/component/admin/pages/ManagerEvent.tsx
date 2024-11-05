@@ -56,7 +56,7 @@ const ManagerEvent = () => {
     };
 
     fetchVenues();
-  }, []);
+  }, [isDialogOpen]);
 
   const openDialog = (venueId: string) => {
     setEventDetails({ ...eventDetails, venueId });
