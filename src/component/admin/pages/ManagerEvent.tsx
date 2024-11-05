@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import axios from 'axios';
 
 type Venue = {
@@ -107,7 +107,7 @@ const ManagerEvent = () => {
 
   const availableVenues = venues.filter(venue => venue.isAvailable);
   const notAvailableVenues = venues.filter(venue => !venue.isAvailable);
-
+  const today = new Date().toISOString().split("T")[0];
   return (
     <div className="adminevent">
       <h3>Event Venue List:</h3>
@@ -161,6 +161,9 @@ const ManagerEvent = () => {
             InputLabelProps={{
               shrink: true,
             }}
+            inputProps={{
+              min: today, // Restrict past dates
+            }}
           />
           <TextField
             label="End Date"
@@ -172,6 +175,9 @@ const ManagerEvent = () => {
             onChange={handleInputChange}
             InputLabelProps={{
               shrink: true,
+            }}
+            inputProps={{
+              min: today, // Restrict past dates
             }}
           />
         </DialogContent>
