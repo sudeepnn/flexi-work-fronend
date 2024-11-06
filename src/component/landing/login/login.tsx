@@ -22,6 +22,10 @@ const LoginForm: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showError, setShowError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false); // Track password visibility
+  const [email, setEmail] = useState<string>('');
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null); 
+  const [isEmailValidated, setIsEmailValidated] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const handleChange = (
@@ -34,10 +38,13 @@ const LoginForm: React.FC = () => {
     }));
   };
 
+  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setShowError(false);
 
+    
     try {
       const response = await axios.post('http://localhost:3001/api/v1/users/login', formData);
       console.log('User logged in successfully:', response.data);
@@ -58,6 +65,16 @@ const LoginForm: React.FC = () => {
     setShowError(false);
   };
 
+  const handleForgotPassword = async () => {
+    try {
+      const response = await axios.post('http://localhost:3001/api/v1/user/forget-password', { user_id: formData.user_id });
+      setSuccessMessage("Password reset link sent to your email.");
+      setShowError(false);
+    } catch (error: any) {
+      setErrorMessage(error.response?.data?.message || 'Failed to send reset link.');
+      setShowError(true);
+    }
+  };
   return (
     <div className='loginsignup'>
       <Nav option1='Home' link1='/' option2='Home' link2='/' />
@@ -70,14 +87,26 @@ const LoginForm: React.FC = () => {
         <div className="right">
           <h3>Login</h3>
           <form className="inputs" onSubmit={handleSubmit}>
-            <Snackbar
+          <Snackbar
               open={showError}
-              autoHideDuration={6000}
-              onClose={handleCloseSnackbar}
+              autoHideDuration={1000}
+              onClose={() => setShowError(false)}
               anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
-              <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+              <Alert onClose={() => setShowError(false)} severity="error" sx={{ width: '100%' }}>
                 {errorMessage}
+              </Alert>
+            </Snackbar>
+
+            {/* Snackbar for Success Message */}
+            <Snackbar
+              open={Boolean(successMessage)}
+              autoHideDuration={1000}
+              onClose={() => setSuccessMessage(null)}
+              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+              <Alert onClose={() => setSuccessMessage(null)} severity="success" sx={{ width: '100%' }}>
+                {successMessage}
               </Alert>
             </Snackbar>
             <TextField
@@ -118,6 +147,14 @@ const LoginForm: React.FC = () => {
               sx={{ mt: 3, mb: 2, backgroundColor: '#016375', borderRadius: '15px' }}
             >
               Login
+            </Button>
+            <Button
+              fullWidth
+              variant="text"
+              onClick={handleForgotPassword} // Directly trigger forgot password
+              //sx={{ color: '#016375' }}
+            >
+              Forgot Password?
             </Button>
           </form>
         </div>

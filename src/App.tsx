@@ -25,6 +25,7 @@ import Adminvenue from './component/admin/venue/AdminEvenue';
 import Vendorhandler from './component/route_handler/Vendor_handler';
 import Logout from './component/landing/Logout';
 import Employeehandler from './component/route_handler/employeehandler';
+import ResetPassword from './component/landing/login/resetPassword';
 
 
 const App: React.FC = () => {
@@ -34,6 +35,7 @@ const App: React.FC = () => {
         { <><Route path="/" element={<Home />} />
         <Route path="/signup" element={<SignUpForm />} />
         <Route path="/login" element={<LoginForm />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/dashboard" element={<Dashboardhandling />} />
         <Route path="/parking" element={<Parkinghandler />} />
         <Route path="/workspace" element={<Workspacehandler />} />

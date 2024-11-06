@@ -1,7 +1,7 @@
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import React, { useEffect, useState } from 'react';
-import Snackbar from '@mui/material/Snackbar'; // Assuming you're using Material-UI for Snackbar
+import Snackbar from '@mui/material/Snackbar';
 import './vendorstyle.css';
 
 type Props = {};
@@ -32,8 +32,8 @@ const Vendorbookingsindashboad = (props: Props) => {
     const [user, setUser] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(true); 
     const [vendorSpaces, setVendorSpaces] = useState<VendorSpace[]>([]);
-    const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false); // State for snackbar visibility
-    const [snackbarMessage, setSnackbarMessage] = useState<string>(''); // State for snackbar message
+    const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+    const [snackbarMessage, setSnackbarMessage] = useState<string>('');
     const [refresh, setRefresh] = useState<boolean>(false); // State to trigger re-fetch
 
     useEffect(() => {
@@ -67,16 +67,24 @@ const Vendorbookingsindashboad = (props: Props) => {
         }
     };
 
-    const handleCancelBooking = async (vendorId: string, bookingId: string, userid: string) => {
+    const handleCancelBooking = async (vendorId: string, bookingId: string, userId: string) => {
         try {
-            const response = await axios.delete(`http://localhost:3008/api/v1/vendorspacecancle/${vendorId}/${userid}`, { data: { bookingId } });
+            const response = await axios.delete(`http://localhost:3008/api/v1/vendorspacecancle/${vendorId}/${userId}`, { data: { bookingId } });
+            
             setSnackbarMessage(response.data.message);
             setSnackbarOpen(true); // Open snackbar
 
-            setRefresh(!refresh); // Trigger re-fetch by toggling refresh state
-        } catch (error) {
+            // Refresh vendor data after successful cancellation
+            setRefresh(prev => !prev); // Trigger re-fetch by toggling refresh state
+        } catch (error: any) {
             console.error('Error canceling booking:', error);
             setSnackbarMessage('Failed to cancel booking');
+
+            // Optional: If the error is due to no booking found, you could handle it specifically
+            if (error.response && error.response.status === 404) {
+                setSnackbarMessage('No booking found to cancel.');
+            }
+
             setSnackbarOpen(true);
         }
     };
@@ -91,7 +99,7 @@ const Vendorbookingsindashboad = (props: Props) => {
 
     return (
         <div className="vendor-bookings-dashboard">
-            <h2>Vendor Bookings </h2>
+            <h2>Vendor Bookings</h2>
             <div className="card-container">
                 {vendorSpaces.length > 0 ? (
                     vendorSpaces.map(vendor => (
